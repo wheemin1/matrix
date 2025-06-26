@@ -15,7 +15,7 @@ export interface MatrixPoints {
   outer4: number;
 }
 
-export function calculateDestinyMatrix(birthdate: string): MatrixPoints {
+export function calculateDestinyMatrix(birthdate: string, gender?: string): MatrixPoints {
   const date = new Date(birthdate);
   const day = date.getDate();
   const month = date.getMonth() + 1;

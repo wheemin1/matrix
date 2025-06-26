@@ -93,6 +93,13 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### June 26, 2025 - Gender Field Addition
+- **Added Gender Selection**: Integrated gender (남/여) field to both personal and couple analysis forms
+  - Required field for accurate Destiny Matrix interpretation according to Natalia Ladini's system
+  - Gender affects energy polarity and spiritual interpretation in the matrix
+  - Enhanced database schema and API to support gender data
+  - Updated calculation engine to consider gender in matrix point generation
+
 ### June 26, 2025 - Major UI Enhancement Update
 - **Enhanced Matrix Visualization**: Upgraded matrix chart with professional design inspired by reference images
   - Added age markers around the circle (20, 30, 40... years old)

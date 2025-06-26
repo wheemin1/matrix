@@ -6,6 +6,7 @@ import { Sparkles, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { personalAnalysisSchema, coupleAnalysisSchema, type PersonalAnalysisRequest, type CoupleAnalysisRequest } from "@shared/schema";
@@ -25,6 +26,7 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
       mode: 'personal',
       personalName: '',
       personalBirthdate: '',
+      personalGender: undefined,
     },
   });
 
@@ -34,8 +36,10 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
       mode: 'couple',
       person1Name: '',
       person1Birthdate: '',
+      person1Gender: undefined,
       person2Name: '',
       person2Birthdate: '',
+      person2Gender: undefined,
     },
   });
 
@@ -123,6 +127,28 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
               )}
             />
             
+            <FormField
+              control={personalForm.control}
+              name="personalGender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-white font-medium">성별</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="bg-white/10 border-white/30 text-white focus:border-yellow-400 focus:ring-yellow-400/50">
+                        <SelectValue placeholder="성별을 선택하세요" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-gray-900 border-white/30">
+                      <SelectItem value="male" className="text-white hover:bg-white/10">남성</SelectItem>
+                      <SelectItem value="female" className="text-white hover:bg-white/10">여성</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
             <Button
               type="submit"
               disabled={analysisMutation.isPending}
@@ -175,6 +201,28 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={coupleForm.control}
+                    name="person1Gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white font-medium">성별</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-white/10 border-white/30 text-white focus:border-yellow-400 focus:ring-yellow-400/50">
+                              <SelectValue placeholder="성별 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-gray-900 border-white/30">
+                            <SelectItem value="male" className="text-white hover:bg-white/10">남성</SelectItem>
+                            <SelectItem value="female" className="text-white hover:bg-white/10">여성</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </div>
               
@@ -212,6 +260,28 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
                             className="bg-white/10 border-white/30 text-white focus:border-yellow-400 focus:ring-yellow-400/50"
                           />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={coupleForm.control}
+                    name="person2Gender"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white font-medium">성별</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="bg-white/10 border-white/30 text-white focus:border-yellow-400 focus:ring-yellow-400/50">
+                              <SelectValue placeholder="성별 선택" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent className="bg-gray-900 border-white/30">
+                            <SelectItem value="male" className="text-white hover:bg-white/10">남성</SelectItem>
+                            <SelectItem value="female" className="text-white hover:bg-white/10">여성</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

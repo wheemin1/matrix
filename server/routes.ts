@@ -16,17 +16,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(400).json({ error: validation.error.errors });
         }
         
-        const { personalName, personalBirthdate } = validation.data;
-        const matrixPoints = calculateDestinyMatrix(personalBirthdate);
+        const { personalName, personalBirthdate, personalGender } = validation.data;
+        const matrixPoints = calculateDestinyMatrix(personalBirthdate, personalGender);
         
         const analysis = await storage.createMatrixAnalysis({
           mode: "personal",
           personalName,
           personalBirthdate,
+          personalGender,
           person1Name: null,
           person1Birthdate: null,
+          person1Gender: null,
           person2Name: null,
           person2Birthdate: null,
+          person2Gender: null,
           matrixPoints: JSON.stringify(matrixPoints),
         });
         
@@ -44,9 +47,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(400).json({ error: validation.error.errors });
         }
         
-        const { person1Name, person1Birthdate, person2Name, person2Birthdate } = validation.data;
-        const person1Matrix = calculateDestinyMatrix(person1Birthdate);
-        const person2Matrix = calculateDestinyMatrix(person2Birthdate);
+        const { person1Name, person1Birthdate, person1Gender, person2Name, person2Birthdate, person2Gender } = validation.data;
+        const person1Matrix = calculateDestinyMatrix(person1Birthdate, person1Gender);
+        const person2Matrix = calculateDestinyMatrix(person2Birthdate, person2Gender);
         
         const matrixPoints = {
           person1: person1Matrix,
@@ -57,10 +60,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           mode: "couple",
           personalName: null,
           personalBirthdate: null,
+          personalGender: null,
           person1Name,
           person1Birthdate,
+          person1Gender,
           person2Name,
           person2Birthdate,
+          person2Gender,
           matrixPoints: JSON.stringify(matrixPoints),
         });
         
