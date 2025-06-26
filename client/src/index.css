@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(263, 85%, 63%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Custom Destiny Matrix Colors */
+  --mystic-50: hsl(243, 100%, 98%);
+  --mystic-100: hsl(246, 100%, 95%);
+  --mystic-200: hsl(246, 100%, 89%);
+  --mystic-300: hsl(243, 100%, 82%);
+  --mystic-400: hsl(243, 100%, 75%);
+  --mystic-500: hsl(263, 85%, 63%);
+  --mystic-600: hsl(263, 70%, 50%);
+  --mystic-700: hsl(263, 85%, 40%);
+  --mystic-800: hsl(263, 85%, 32%);
+  --mystic-900: hsl(263, 70%, 25%);
+  
+  --gold-50: hsl(48, 100%, 96%);
+  --gold-100: hsl(48, 96%, 89%);
+  --gold-200: hsl(48, 97%, 77%);
+  --gold-300: hsl(46, 97%, 65%);
+  --gold-400: hsl(43, 96%, 56%);
+  --gold-500: hsl(38, 92%, 50%);
+  --gold-600: hsl(32, 95%, 44%);
+  --gold-700: hsl(26, 90%, 37%);
+  --gold-800: hsl(23, 83%, 31%);
+  --gold-900: hsl(22, 78%, 26%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(263, 85%, 63%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-gradient-to-br from-purple-900 via-violet-900 to-indigo-900 min-h-screen text-white;
+  }
+}
+
+/* Destiny Matrix specific styles */
+.matrix-point {
+  @apply w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border-2 border-white/30;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: absolute;
+}
+
+.matrix-point:hover {
+  @apply scale-110 border-white/60;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); 
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); 
+  }
+}
+
+.constellation-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent;
+}
+
+.glass-card {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl;
+}
+
+.mystical-button {
+  @apply bg-gradient-to-r transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+}
