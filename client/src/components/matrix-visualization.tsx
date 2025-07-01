@@ -126,38 +126,8 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               {/* Outer Circle with Age Markers */}
               <div className="absolute inset-0 border-2 border-white/30 rounded-full"></div>
               
-              {/* Age Markers around the circle */}
-              <div className="absolute inset-0">
-                {[...Array(12)].map((_, i) => {
-                  const angle = (i * 30) - 90; // Start from top
-                  const radian = (angle * Math.PI) / 180;
-                  const radius = 96; // 더 바깥쪽으로 위치 조정 (원래 90에서 증가)
-                  const x = 50 + radius * Math.cos(radian); // Percentage
-                  const y = 50 + radius * Math.sin(radian); // Percentage
-                  const age = [20, 30, 40, 50, 60, 70, 10, 80, 90, 0, 100, 110][i];
-                  
-                  // 나이 마커 주변에 작은 원 추가 (시각적 강화)
-                  return (
-                    <div
-                      key={i}
-                      className="absolute flex flex-col items-center justify-center"
-                      style={{
-                        left: `${x}%`,
-                        top: `${y}%`,
-                        transform: 'translate(-50%, -50%)',
-                        padding: '4px', // 추가 패딩으로 공간 확보
-                        minWidth: '30px' // 최소 너비 설정
-                      }}
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-white/30 mb-1 hidden sm:block"></div>
-                      <div className="text-[9px] sm:text-xs text-white/70 font-medium bg-indigo-900/40 px-1.5 py-0.5 rounded-full backdrop-blur-sm">
-                        {age}
-                        <span className="text-[7px] sm:text-[10px] text-white/40 ml-0.5">세</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Age Markers around the circle - 제거 */}
+              {/* 연령 마커는 포인트 내부에만 표시하고 외부 원 주변에는 표시하지 않음 */}
               
               {/* Inner geometric structure */}
               {/* 내부 배경 그라데이션 원 추가 */}
