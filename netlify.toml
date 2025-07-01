@@ -16,14 +16,3 @@
 # 서버리스 함수 설정
 [functions]
   directory = "netlify/functions"
-  
-# 함수 별칭 설정 - 수정된 함수를 사용하도록 리다이렉션
-[[redirects]]
-  from = "/.netlify/functions/analyze"
-  to = "/.netlify/functions/analyze-fixed"
-  status = 200
-
-[[redirects]]
-  from = "/.netlify/functions/analysis/*"
-  to = "/.netlify/functions/analysis-fixed/:splat"
-  status = 200
