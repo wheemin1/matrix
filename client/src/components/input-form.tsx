@@ -12,6 +12,7 @@ import Loading from "@/components/loading";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { AppError } from "@/lib/error-utils";
+import { endpoints } from "@/lib/config";
 import { personalAnalysisSchema, coupleAnalysisSchema, type PersonalAnalysisRequest, type CoupleAnalysisRequest } from "@shared/schema";
 
 interface InputFormProps {
@@ -48,7 +49,7 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
 
   const analysisMutation = useMutation<AnalysisResult, AppError, PersonalAnalysisRequest | CoupleAnalysisRequest>({
     mutationFn: async (data: PersonalAnalysisRequest | CoupleAnalysisRequest) => {
-      const response = await apiRequest('POST', '/api/analyze', data);
+      const response = await apiRequest('POST', endpoints.analyze, data);
       return response.json();
     },
     onSuccess: (result) => {

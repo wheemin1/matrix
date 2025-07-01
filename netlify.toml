@@ -1,0 +1,18 @@
+[build]
+  base = "."
+  publish = "client/dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  VITE_API_URL = "/.netlify/functions"
+
+# 클라이언트 사이드 라우팅을 위한 리다이렉트 설정
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# 서버리스 함수 설정 (필요시 사용)
+[functions]
+  directory = "netlify/functions"
