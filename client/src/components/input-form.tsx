@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import type { AnalysisResult } from "@shared/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -7,13 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Loading from "@/components/loading";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { AppError } from "@/lib/error-utils";
 import { personalAnalysisSchema, coupleAnalysisSchema, type PersonalAnalysisRequest, type CoupleAnalysisRequest } from "@shared/schema";
 
 interface InputFormProps {
   mode: 'personal' | 'couple';
-  onAnalysisComplete: (result: any) => void;
+  onAnalysisComplete: (result: AnalysisResult) => void;
   onBack: () => void;
 }
 
@@ -43,7 +46,7 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
     },
   });
 
-  const analysisMutation = useMutation({
+  const analysisMutation = useMutation<AnalysisResult, AppError, PersonalAnalysisRequest | CoupleAnalysisRequest>({
     mutationFn: async (data: PersonalAnalysisRequest | CoupleAnalysisRequest) => {
       const response = await apiRequest('POST', '/api/analyze', data);
       return response.json();
@@ -56,11 +59,32 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
       onAnalysisComplete(result);
     },
     onError: (error: any) => {
-      toast({
-        title: "분석 실패",
-        description: error.message || "분석 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
+      if (error instanceof AppError && error.retryable) {
+        toast({
+          title: "분석 실패",
+          description: (
+            <div className="flex flex-col gap-2">
+              <p>{error.message}</p>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  const currentData = mode === 'personal' ? personalForm.getValues() : coupleForm.getValues();
+                  analysisMutation.mutate(currentData);
+                }}
+              >
+                다시 시도
+              </Button>
+            </div>
+          ),
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "분석 실패",
+          description: error.message || "분석 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -154,8 +178,14 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
               disabled={analysisMutation.isPending}
               className="w-full mystical-button from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-white font-semibold py-4 rounded-xl"
             >
-              <Sparkles className="mr-2" size={20} />
-              {analysisMutation.isPending ? '분석 중...' : '운명 분석하기'}
+              {analysisMutation.isPending ? (
+                <Loading size="sm" message="분석 중..." fullScreen={false} />
+              ) : (
+                <>
+                  <Sparkles className="mr-2" size={20} />
+                  운명 분석하기
+                </>
+              )}
             </Button>
           </form>
         </Form>
@@ -296,8 +326,14 @@ export default function InputForm({ mode, onAnalysisComplete, onBack }: InputFor
                 disabled={analysisMutation.isPending}
                 className="mystical-button from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-white font-semibold px-8 py-4 rounded-xl"
               >
-                <Sparkles className="mr-2" size={20} />
-                {analysisMutation.isPending ? '분석 중...' : '운명 분석하기'}
+                {analysisMutation.isPending ? (
+                  <Loading size="sm" message="분석 중..." fullScreen={false} />
+                ) : (
+                  <>
+                    <Sparkles className="mr-2" size={20} />
+                    운명 분석하기
+                  </>
+                )}
               </Button>
             </div>
           </form>

@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Stars, Compass, Lightbulb, Route, Eye, Wand2, Infinity, TriangleAlert, Star, Heart } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Stars, Compass, Lightbulb, Route, Eye, Wand2, Infinity, TriangleAlert, Star, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getTarotCard } from "@/lib/tarot-data";
+import { useSwipe } from "@/hooks/use-swipe";
 
 interface InterpretationTabsProps {
   matrixPoints: any;
@@ -10,6 +11,7 @@ interface InterpretationTabsProps {
 
 export default function InterpretationTabs({ matrixPoints, mode }: InterpretationTabsProps) {
   const [activeTab, setActiveTab] = useState('overview');
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const tabs = [
     { id: 'overview', label: '전체 개요', icon: Compass },
@@ -19,42 +21,106 @@ export default function InterpretationTabs({ matrixPoints, mode }: Interpretatio
     { id: 'relationships', label: '관계', icon: Heart },
   ];
 
+  // 현재 활성 탭의 인덱스 찾기
+  const activeTabIndex = tabs.findIndex(tab => tab.id === activeTab);
+
+  // 이전/다음 탭으로 이동하는 함수
+  const goToPrevTab = () => {
+    if (activeTabIndex > 0) {
+      setActiveTab(tabs[activeTabIndex - 1].id);
+    }
+  };
+
+  const goToNextTab = () => {
+    if (activeTabIndex < tabs.length - 1) {
+      setActiveTab(tabs[activeTabIndex + 1].id);
+    }
+  };
+
+  // 스와이프 훅 사용
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: goToNextTab,
+    onSwipeRight: goToPrevTab
+  });
+
   const coreEnergyCard = getTarotCard(matrixPoints.coreEnergy);
   const spiritualPurposeCard = getTarotCard(matrixPoints.spiritualPurpose);
   const talentCard = getTarotCard(matrixPoints.talent);
   const karmaCard = getTarotCard(matrixPoints.karma);
 
   return (
-    <div className="glass-card p-8">
-      <h3 className="text-2xl font-bold text-white mb-6 text-center flex items-center justify-center">
+    <div className="glass-card p-4 sm:p-6 md:p-8">
+      <h3 className="text-xl sm:text-2xl font-bold text-white mb-6 text-center flex items-center justify-center">
         <Stars className="text-yellow-400 mr-2" size={24} />
         상세 해석
       </h3>
       
-      {/* Interpretation Tabs */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <Button
-              key={tab.id}
-              variant={activeTab === tab.id ? "default" : "ghost"}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white'
-                  : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
-              }`}
-            >
-              <Icon className="mr-2" size={16} />
-              {tab.label}
-            </Button>
-          );
-        })}
+      {/* Interpretation Tabs - Mobile Scroll */}
+      <div 
+        className="overflow-x-auto pb-2 mb-4 sm:mb-8 hide-scrollbar"
+        role="tablist"
+        aria-label="해석 카테고리"
+      >
+        <div className="flex justify-start sm:justify-center gap-2 min-w-max px-1">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? "default" : "ghost"}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white'
+                    : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
+                } touch-manipulation whitespace-nowrap`}
+                aria-selected={activeTab === tab.id}
+                role="tab"
+                aria-controls={`${tab.id}-panel`}
+                id={`${tab.id}-tab`}
+              >
+                <Icon className="mr-2" size={16} aria-hidden="true" />
+                {tab.label}
+              </Button>
+            );
+          })}
+        </div>
       </div>
       
-      {/* Tab Content */}
-      <div className="min-h-[400px]">
+      {/* Mobile Navigation Controls */}
+      <div className="flex justify-between items-center mb-4 sm:hidden">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={goToPrevTab} 
+          disabled={activeTabIndex === 0}
+          className="text-white/70 hover:text-white disabled:opacity-30 touch-manipulation"
+          aria-label="이전 탭"
+        >
+          <ChevronLeft size={20} />
+        </Button>
+        <div className="text-white font-medium">{tabs[activeTabIndex].label}</div>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={goToNextTab} 
+          disabled={activeTabIndex === tabs.length - 1}
+          className="text-white/70 hover:text-white disabled:opacity-30 touch-manipulation"
+          aria-label="다음 탭"
+        >
+          <ChevronRight size={20} />
+        </Button>
+      </div>
+      
+      {/* Tab Content with Swipe Support */}
+      <div 
+        ref={contentRef}
+        className="min-h-[400px] touch-pan-y"
+        {...swipeHandlers}
+        role="tabpanel"
+        id={`${activeTab}-panel`}
+        aria-labelledby={`${activeTab}-tab`}
+      >
         {activeTab === 'overview' && (
           <div className="space-y-6">
             <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl p-6 border border-amber-400/30">

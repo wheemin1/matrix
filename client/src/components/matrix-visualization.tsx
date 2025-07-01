@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Stars, Share, Download, RotateCcw } from "lucide-react";
+import { Stars, Share, Download, RotateCcw, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import InterpretationTabs from "./interpretation-tabs";
@@ -43,11 +43,46 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
     });
   };
 
-  const handleShare = () => {
-    toast({
-      title: "공유 링크 복사됨",
-      description: "분석 결과 링크가 클립보드에 복사되었습니다.",
-    });
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "공유 링크 복사됨",
+        description: "분석 결과 링크가 클립보드에 복사되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "링크 복사 실패",
+        description: "링크 복사 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleInstagramShare = async () => {
+    try {
+      const canvas = document.createElement('canvas');
+      // 여기에 결과 이미지 생성 로직 추가
+      // 이미지 데이터를 스토리에 공유하기 위한 URL 생성
+      const imageUrl = canvas.toDataURL('image/png');
+      
+      // 모바일에서 인스타그램 스토리 공유
+      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        window.location.href = `instagram://story-camera?media=${encodeURIComponent(imageUrl)}`;
+      } else {
+        toast({
+          title: "PC에서 공유하기",
+          description: "인스타그램 스토리 공유는 모바일에서만 가능합니다. 대신 이미지를 다운로드해서 공유해보세요.",
+          variant: "default",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "공유 실패",
+        description: "인스타그램 스토리 공유 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDownload = () => {
@@ -86,8 +121,8 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
           </div>
           
           {/* Enhanced Matrix Chart */}
-          <div className="flex justify-center mb-8">
-            <div className="relative w-[500px] h-[500px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10">
+          <div className="flex justify-center mb-8 overflow-x-auto px-2 sm:px-0">
+            <div className="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10 transform-gpu touch-manipulation">
               {/* Outer Circle with Age Markers */}
               <div className="absolute inset-0 border-2 border-white/30 rounded-full"></div>
               
@@ -96,22 +131,23 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {[...Array(12)].map((_, i) => {
                   const angle = (i * 30) - 90; // Start from top
                   const radian = (angle * Math.PI) / 180;
-                  const x = 240 + 220 * Math.cos(radian);
-                  const y = 240 + 220 * Math.sin(radian);
+                  const radius = 90; // Percentage based on viewport size
+                  const x = 50 + radius * Math.cos(radian); // Percentage
+                  const y = 50 + radius * Math.sin(radian); // Percentage
                   const age = [20, 30, 40, 50, 60, 70, 10, 80, 90, 0, 100, 110][i];
                   
                   return (
                     <div
                       key={i}
-                      className="absolute text-xs text-white/60 font-medium"
+                      className="absolute text-[8px] sm:text-xs text-white/60 font-medium"
                       style={{
-                        left: `${x}px`,
-                        top: `${y}px`,
+                        left: `${x}%`,
+                        top: `${y}%`,
                         transform: 'translate(-50%, -50%)'
                       }}
                     >
                       {age}
-                      <div className="text-[10px] text-white/40">years old</div>
+                      <div className="text-[6px] sm:text-[10px] text-white/40">세</div>
                     </div>
                   );
                 })}
@@ -146,13 +182,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               {/* Matrix Points with enhanced styling */}
               {/* Top - Spiritual Purpose */}
               <div 
-                className="matrix-point absolute w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110"
+                className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
                   top: '12%',
                   transform: 'translate(-50%, -50%)',
                   background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
-                  boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)'
+                  boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.spiritualPurpose)}
               >
@@ -161,13 +197,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               
               {/* Right - Talent */}
               <div 
-                className="matrix-point absolute w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110"
+                className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   right: '12%',
                   top: '50%',
                   transform: 'translate(50%, -50%)',
                   background: 'linear-gradient(135deg, #10B981, #059669)',
-                  boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)'
+                  boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.talent)}
               >
@@ -176,13 +212,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               
               {/* Bottom - Karma */}
               <div 
-                className="matrix-point absolute w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110"
+                className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
                   bottom: '12%',
                   transform: 'translate(-50%, 50%)',
                   background: 'linear-gradient(135deg, #EF4444, #DC2626)',
-                  boxShadow: '0 0 30px rgba(239, 68, 68, 0.4)'
+                  boxShadow: '0 0 20px rgba(239, 68, 68, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.karma)}
               >
@@ -191,13 +227,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               
               {/* Left - Behavior */}
               <div 
-                className="matrix-point absolute w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110"
+                className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '12%',
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
                   background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
-                  boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)'
+                  boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.behavior)}
               >
@@ -206,13 +242,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               
               {/* Center - Core Energy */}
               <div 
-                className="matrix-point absolute w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl cursor-pointer transition-all duration-300 border-3 border-white/50 shadow-2xl hover:scale-110"
+                className="matrix-point absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl cursor-pointer transition-all duration-300 border-2 sm:border-3 border-white/50 shadow-2xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
                   background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                  boxShadow: '0 0 40px rgba(245, 158, 11, 0.6)'
+                  boxShadow: '0 0 30px rgba(245, 158, 11, 0.6)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.coreEnergy)}
               >
@@ -221,7 +257,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               
               {/* Additional inner points */}
               <div 
-                className="matrix-point absolute w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '72%',
                   top: '28%',
@@ -233,7 +269,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.additional1}
               </div>
               <div 
-                className="matrix-point absolute w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '72%',
                   top: '72%',
@@ -245,7 +281,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.additional2}
               </div>
               <div 
-                className="matrix-point absolute w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '28%',
                   top: '72%',
@@ -257,7 +293,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.additional3}
               </div>
               <div 
-                className="matrix-point absolute w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '28%',
                   top: '28%',
@@ -271,7 +307,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               
               {/* Outer ring points */}
               <div 
-                className="matrix-point absolute w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
                   top: '2%',
@@ -283,7 +319,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.outer1}
               </div>
               <div 
-                className="matrix-point absolute w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   right: '2%',
                   top: '50%',
@@ -295,7 +331,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.outer2}
               </div>
               <div 
-                className="matrix-point absolute w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
                   bottom: '2%',
@@ -307,7 +343,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.outer3}
               </div>
               <div 
-                className="matrix-point absolute w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110"
+                className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '2%',
                   top: '50%',
@@ -420,28 +456,41 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
           <InterpretationTabs matrixPoints={matrixPoints} mode={result.mode} />
           
           {/* Action Buttons */}
-          <div className="flex justify-center space-x-4">
-            <Button
-              onClick={handleShare}
-              className="mystical-button from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white px-6 py-3 rounded-lg font-medium"
-            >
-              <Share className="mr-2" size={16} />
-              결과 공유하기
-            </Button>
-            <Button
-              onClick={handleDownload}
-              className="mystical-button from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-6 py-3 rounded-lg font-medium"
-            >
-              <Download className="mr-2" size={16} />
-              PDF로 저장
-            </Button>
-            <Button
-              onClick={onNewAnalysis}
-              className="mystical-button from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white px-6 py-3 rounded-lg font-medium"
-            >
-              <RotateCcw className="mr-2" size={16} />
-              새로운 분석
-            </Button>
+          <div className="flex flex-col items-center gap-6">
+            <div className="flex justify-center space-x-4">
+              <Button
+                onClick={handleShare}
+                className="mystical-button from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white px-6 py-3 rounded-lg font-medium"
+              >
+                <Share className="mr-2" size={16} />
+                결과 공유하기
+              </Button>
+              <Button
+                onClick={handleDownload}
+                className="mystical-button from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-6 py-3 rounded-lg font-medium"
+              >
+                <Download className="mr-2" size={16} />
+                PDF로 저장
+              </Button>
+              <Button
+                onClick={onNewAnalysis}
+                className="mystical-button from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white px-6 py-3 rounded-lg font-medium"
+              >
+                <RotateCcw className="mr-2" size={16} />
+                새로운 분석
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={handleInstagramShare}
+                className="mystical-button from-pink-500 via-purple-500 to-yellow-500 hover:from-pink-400 hover:via-purple-400 hover:to-yellow-400 text-white px-6 py-3 rounded-lg font-medium"
+              >
+                <Instagram className="mr-2" size={16} />
+                인스타그램 스토리로 공유
+              </Button>
+              <span className="text-yellow-400 text-sm font-medium animate-pulse">✨ 인스타에서 유행중!</span>
+            </div>
           </div>
         </>
       )}
