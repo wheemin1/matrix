@@ -122,7 +122,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
           
           {/* Enhanced Matrix Chart */}
           <div className="flex justify-center mb-8 px-2 sm:px-0">
-            <div className="relative w-[300px] h-[300px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10 transform-gpu touch-manipulation">
+            <div className="relative w-[330px] h-[330px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[580px] lg:h-[580px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10 transform-gpu touch-manipulation">
               {/* Outer Circle with Age Markers */}
               <div className="absolute inset-0 border-2 border-white/30 rounded-full"></div>
               
@@ -131,51 +131,64 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {[...Array(12)].map((_, i) => {
                   const angle = (i * 30) - 90; // Start from top
                   const radian = (angle * Math.PI) / 180;
-                  const radius = 90; // Percentage based on viewport size
+                  const radius = 96; // 더 바깥쪽으로 위치 조정 (원래 90에서 증가)
                   const x = 50 + radius * Math.cos(radian); // Percentage
                   const y = 50 + radius * Math.sin(radian); // Percentage
                   const age = [20, 30, 40, 50, 60, 70, 10, 80, 90, 0, 100, 110][i];
                   
+                  // 나이 마커 주변에 작은 원 추가 (시각적 강화)
                   return (
                     <div
                       key={i}
-                      className="absolute text-[8px] sm:text-xs text-white/60 font-medium"
+                      className="absolute flex flex-col items-center justify-center"
                       style={{
                         left: `${x}%`,
                         top: `${y}%`,
-                        transform: 'translate(-50%, -50%)'
+                        transform: 'translate(-50%, -50%)',
+                        padding: '4px', // 추가 패딩으로 공간 확보
+                        minWidth: '30px' // 최소 너비 설정
                       }}
                     >
-                      {age}
-                      <div className="text-[6px] sm:text-[10px] text-white/40">세</div>
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/30 mb-1 hidden sm:block"></div>
+                      <div className="text-[9px] sm:text-xs text-white/70 font-medium bg-indigo-900/40 px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+                        {age}
+                        <span className="text-[7px] sm:text-[10px] text-white/40 ml-0.5">세</span>
+                      </div>
                     </div>
                   );
                 })}
               </div>
               
               {/* Inner geometric structure */}
+              {/* 내부 배경 그라데이션 원 추가 */}
+              <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-indigo-800/10 to-purple-600/10 border border-white/5"></div>
+              
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 500 500">
                 <defs>
                   <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
                     <stop offset="100%" stopColor="rgba(255,255,255,0.1)" />
                   </linearGradient>
+                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
                 </defs>
-                <g stroke="url(#lineGradient)" strokeWidth="1.5" fill="none">
+                <g stroke="url(#lineGradient)" strokeWidth="1.5" fill="none" filter="url(#glow)">
                   {/* Outer diamond */}
-                  <polygon points="250,60 420,250 250,420 80,250" />
+                  <polygon points="250,50 430,250 250,450 70,250" />
                   {/* Inner diamond */}
-                  <polygon points="250,120 360,250 250,380 140,250" />
+                  <polygon points="250,110 370,250 250,390 130,250" />
                   {/* Central cross */}
-                  <line x1="250" y1="120" x2="250" y2="380" />
-                  <line x1="140" y1="250" x2="360" y2="250" />
+                  <line x1="250" y1="110" x2="250" y2="390" />
+                  <line x1="130" y1="250" x2="370" y2="250" />
                   {/* Diagonal connections */}
-                  <line x1="250" y1="120" x2="360" y2="250" />
-                  <line x1="360" y1="250" x2="250" y2="380" />
-                  <line x1="250" y1="380" x2="140" y2="250" />
-                  <line x1="140" y1="250" x2="250" y2="120" />
+                  <line x1="250" y1="110" x2="370" y2="250" />
+                  <line x1="370" y1="250" x2="250" y2="390" />
+                  <line x1="250" y1="390" x2="130" y2="250" />
+                  <line x1="130" y1="250" x2="250" y2="110" />
                   {/* Heart symbol in center */}
-                  <path d="M240 240 c0,-8 8,-12 10,-4 c2,-8 10,-4 10,4 c0,6 -10,16 -10,16 s-10,-10 -10,-16 z" fill="rgba(255,20,147,0.8)" />
+                  <path d="M240 240 c0,-10 10,-15 12,-5 c2,-10 12,-5 12,5 c0,8 -12,20 -12,20 s-12,-12 -12,-20 z" fill="rgba(255,20,147,0.8)" />
                 </g>
               </svg>
               
@@ -185,7 +198,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
-                  top: '12%',
+                  top: '10%', // 더 위쪽으로 이동 (12% -> 10%)
                   transform: 'translate(-50%, -50%)',
                   background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
                   boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)'
@@ -199,7 +212,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               <div 
                 className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  right: '12%',
+                  right: '10%', // 더 오른쪽으로 이동 (12% -> 10%)
                   top: '50%',
                   transform: 'translate(50%, -50%)',
                   background: 'linear-gradient(135deg, #10B981, #059669)',
@@ -215,7 +228,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
-                  bottom: '12%',
+                  bottom: '10%', // 더 아래쪽으로 이동 (12% -> 10%)
                   transform: 'translate(-50%, 50%)',
                   background: 'linear-gradient(135deg, #EF4444, #DC2626)',
                   boxShadow: '0 0 20px rgba(239, 68, 68, 0.4)'
@@ -229,7 +242,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               <div 
                 className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  left: '12%',
+                  left: '10%', // 더 왼쪽으로 이동 (12% -> 10%)
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
                   background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
@@ -255,14 +268,15 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 {matrixPoints.coreEnergy}
               </div>
               
-              {/* Additional inner points */}
+              {/* Additional inner points - 위치 조정해서 더 넓게 배치 */}
               <div 
                 className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  left: '72%',
-                  top: '28%',
+                  left: '74%', // 72% -> 74% (더 오른쪽으로)
+                  top: '26%', // 28% -> 26% (더 위쪽으로)
                   transform: 'translate(-50%, -50%)',
-                  background: 'linear-gradient(135deg, #3B82F6, #2563EB)'
+                  background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+                  boxShadow: '0 0 15px rgba(59, 130, 246, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.additional1)}
               >
@@ -271,10 +285,11 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               <div 
                 className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  left: '72%',
-                  top: '72%',
+                  left: '74%', // 72% -> 74% (더 오른쪽으로)
+                  top: '74%', // 72% -> 74% (더 아래쪽으로)
                   transform: 'translate(-50%, -50%)',
-                  background: 'linear-gradient(135deg, #F97316, #EA580C)'
+                  background: 'linear-gradient(135deg, #F97316, #EA580C)',
+                  boxShadow: '0 0 15px rgba(249, 115, 22, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.additional2)}
               >
@@ -283,10 +298,11 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               <div 
                 className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  left: '28%',
-                  top: '72%',
+                  left: '26%', // 28% -> 26% (더 왼쪽으로)
+                  top: '74%', // 72% -> 74% (더 아래쪽으로)
                   transform: 'translate(-50%, -50%)',
-                  background: 'linear-gradient(135deg, #EC4899, #DB2777)'
+                  background: 'linear-gradient(135deg, #EC4899, #DB2777)',
+                  boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.additional3)}
               >
@@ -295,64 +311,73 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               <div 
                 className="matrix-point absolute w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  left: '28%',
-                  top: '28%',
+                  left: '26%', // 28% -> 26% (더 왼쪽으로)
+                  top: '26%', // 28% -> 26% (더 위쪽으로)
                   transform: 'translate(-50%, -50%)',
-                  background: 'linear-gradient(135deg, #06B6D4, #0891B2)'
+                  background: 'linear-gradient(135deg, #06B6D4, #0891B2)',
+                  boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.additional4)}
               >
                 {matrixPoints.additional4}
               </div>
               
-              {/* Outer ring points */}
+              {/* Outer ring points - 배치를 좀 더 바깥쪽으로 */}
               <div 
                 className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
-                  top: '2%',
+                  top: '4%', // 2% -> 4% (더 바깥쪽으로)
                   transform: 'translate(-50%, -50%)',
-                  background: 'linear-gradient(135deg, #6366F1, #4F46E5)'
+                  background: 'linear-gradient(135deg, #6366F1, #4F46E5)',
+                  boxShadow: '0 0 15px rgba(99, 102, 241, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.outer1)}
               >
                 {matrixPoints.outer1}
+                <span className="absolute -top-5 text-[9px] text-white/50">0세</span>
               </div>
               <div 
                 className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  right: '2%',
+                  right: '4%', // 2% -> 4% (더 바깥쪽으로)
                   top: '50%',
                   transform: 'translate(50%, -50%)',
-                  background: 'linear-gradient(135deg, #14B8A6, #0D9488)'
+                  background: 'linear-gradient(135deg, #14B8A6, #0D9488)',
+                  boxShadow: '0 0 15px rgba(20, 184, 166, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.outer2)}
               >
                 {matrixPoints.outer2}
+                <span className="absolute -right-6 text-[9px] text-white/50">30세</span>
               </div>
               <div 
                 className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: '50%',
-                  bottom: '2%',
+                  bottom: '4%', // 2% -> 4% (더 바깥쪽으로)
                   transform: 'translate(-50%, 50%)',
-                  background: 'linear-gradient(135deg, #F59E0B, #D97706)'
+                  background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                  boxShadow: '0 0 15px rgba(245, 158, 11, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.outer3)}
               >
                 {matrixPoints.outer3}
+                <span className="absolute -bottom-5 text-[9px] text-white/50">60세</span>
               </div>
               <div 
                 className="matrix-point absolute w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
-                  left: '2%',
+                  left: '4%', // 2% -> 4% (더 바깥쪽으로)
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
-                  background: 'linear-gradient(135deg, #059669, #047857)'
+                  background: 'linear-gradient(135deg, #059669, #047857)',
+                  boxShadow: '0 0 15px rgba(5, 150, 105, 0.4)'
                 }}
                 onClick={() => handlePointClick(matrixPoints.outer4)}
               >
                 {matrixPoints.outer4}
+                <span className="absolute -left-6 text-[9px] text-white/50">90세</span>
               </div>
             </div>
           </div>
