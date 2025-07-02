@@ -24,11 +24,11 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
     const timer1 = setTimeout(() => {
       setShowLoading(false);
       setShowMatrix(true);
-    }, 3000);
+    }, 2000); // 로딩 시간 단축
 
     const timer2 = setTimeout(() => {
       setShowInterpretations(true);
-    }, 4000);
+    }, 2500); // 상세 해석도 더 빨리 표시
 
     return () => {
       clearTimeout(timer1);
@@ -89,7 +89,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
       });
       
       // 결과 이미지 생성을 위한 컨테이너 선택
-      const element = document.querySelector('.glass-card') as HTMLElement;
+      const element = document.querySelector('.matrix-visualization-container') as HTMLElement;
       if (!element) throw new Error("시각화 컨테이너를 찾을 수 없습니다.");
       
       // html2canvas 라이브러리를 사용하여 고품질 이미지 생성
@@ -195,7 +195,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
       });
       
       // 결과 이미지 생성을 위한 컨테이너 선택
-      const element = document.querySelector('.glass-card') as HTMLElement;
+      const element = document.querySelector('.matrix-visualization-container') as HTMLElement;
       if (!element) throw new Error("분석 결과 컨테이너를 찾을 수 없습니다.");
       
       // html2canvas 라이브러리를 사용하여 고품질 이미지 생성
@@ -289,13 +289,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
     <div className="space-y-4 sm:space-y-6 max-w-full">
       {showMatrix && (
         <div className="glass-card p-4 sm:p-6 md:p-8">
-          <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <div className="text-center mb-4 sm:mb-6">
             <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">{title}</h3>
             <p className="text-sm text-white/70">각 숫자를 클릭하면 상세한 해석을 볼 수 있습니다</p>
           </div>
           
-          {/* Enhanced Matrix Chart */}
-          <div className="flex justify-center mb-8 px-2 sm:px-0">
+          {/* Enhanced Matrix Chart - 최상단에 배치 */}
+          <div className="matrix-visualization-container flex justify-center mb-6 px-2 sm:px-0">
             <div className="relative w-[330px] h-[330px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[580px] lg:h-[580px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10 transform-gpu touch-manipulation">
               {/* Outer Circle with Age Markers */}
               <div className="absolute inset-0 border-2 border-white/30 rounded-full"></div>

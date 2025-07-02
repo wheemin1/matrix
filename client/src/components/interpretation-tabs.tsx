@@ -55,14 +55,38 @@ export default function InterpretationTabs({ matrixPoints, mode }: Interpretatio
         상세 해석
       </h3>
       
-      {/* Interpretation Tabs - Mobile Scroll */}
+      {/* Interpretation Tabs - 모바일용 2줄 그리드 레이아웃으로 변경 */}
       <div 
-        className="overflow-x-auto pb-2 mb-4 sm:mb-8 hide-scrollbar"
+        className="mb-4 sm:mb-8"
         role="tablist"
         aria-label="해석 카테고리"
       >
-        <div className="flex justify-start sm:justify-center gap-2 min-w-max px-1">
-          {tabs.map((tab) => {
+        <div className="grid grid-cols-3 gap-2 mb-2">
+          {tabs.slice(0, 3).map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? "default" : "ghost"}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white'
+                    : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
+                } touch-manipulation whitespace-nowrap`}
+                aria-selected={activeTab === tab.id}
+                role="tab"
+                aria-controls={`${tab.id}-panel`}
+                id={`${tab.id}-tab`}
+              >
+                <Icon className="mr-2" size={16} aria-hidden="true" />
+                {tab.label}
+              </Button>
+            );
+          })}
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {tabs.slice(3).map((tab) => {
             const Icon = tab.icon;
             return (
               <Button
