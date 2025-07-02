@@ -55,7 +55,7 @@ export default function InterpretationTabs({ matrixPoints, mode }: Interpretatio
         상세 해석
       </h3>
       
-      {/* Interpretation Tabs - 모바일용 2줄 그리드 레이아웃으로 변경 */}
+      {/* Interpretation Tabs - 모바일용 2줄 그리드 레이아웃으로 변경 및 최적화 */}
       <div 
         className="mb-4 sm:mb-8"
         role="tablist"
@@ -69,17 +69,17 @@ export default function InterpretationTabs({ matrixPoints, mode }: Interpretatio
                 key={tab.id}
                 variant={activeTab === tab.id ? "default" : "ghost"}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`px-2 sm:px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white'
                     : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
-                } touch-manipulation whitespace-nowrap`}
+                } touch-manipulation whitespace-nowrap text-xs sm:text-sm`}
                 aria-selected={activeTab === tab.id}
                 role="tab"
                 aria-controls={`${tab.id}-panel`}
                 id={`${tab.id}-tab`}
               >
-                <Icon className="mr-2" size={16} aria-hidden="true" />
+                <Icon className="mr-1 sm:mr-2" size={14} aria-hidden="true" />
                 {tab.label}
               </Button>
             );
@@ -93,11 +93,11 @@ export default function InterpretationTabs({ matrixPoints, mode }: Interpretatio
                 key={tab.id}
                 variant={activeTab === tab.id ? "default" : "ghost"}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`px-2 sm:px-4 py-2 rounded-lg font-medium transition-all ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white'
                     : 'bg-white/10 text-white/70 hover:text-white hover:bg-white/20'
-                } touch-manipulation whitespace-nowrap`}
+                } touch-manipulation whitespace-nowrap text-xs sm:text-sm`}
                 aria-selected={activeTab === tab.id}
                 role="tab"
                 aria-controls={`${tab.id}-panel`}

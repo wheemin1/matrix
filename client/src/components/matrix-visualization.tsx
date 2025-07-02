@@ -289,13 +289,13 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
     <div className="space-y-4 sm:space-y-6 max-w-full">
       {showMatrix && (
         <div className="glass-card p-4 sm:p-6 md:p-8">
-          <div className="text-center mb-4 sm:mb-6">
-            <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">{title}</h3>
-            <p className="text-sm text-white/70">각 숫자를 클릭하면 상세한 해석을 볼 수 있습니다</p>
-          </div>
-          
-          {/* Enhanced Matrix Chart - 최상단에 배치 */}
-          <div className="matrix-visualization-container flex justify-center mb-6 px-2 sm:px-0">
+          {/* Matrix Chart - 최상단에 배치 */}
+          <div className="matrix-visualization-container flex flex-col items-center justify-center mb-6 px-2 sm:px-0">
+            <div className="text-center mb-4 sm:mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">{title}</h3>
+              <p className="text-sm text-white/70">각 숫자를 클릭하면 상세한 해석을 볼 수 있습니다</p>
+            </div>
+            {/* 매트릭스 시각화 컴포넌트 */}
             <div className="relative w-[330px] h-[330px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[580px] lg:h-[580px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10 transform-gpu touch-manipulation">
               {/* Outer Circle with Age Markers */}
               <div className="absolute inset-0 border-2 border-white/30 rounded-full"></div>
@@ -562,7 +562,45 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
             </div>
           </div>
           
-          {/* Enhanced Analysis Table */}
+          {/* Action Buttons - 시각화 바로 아래 위치 */}
+          <div className="flex flex-col items-center gap-4 sm:gap-6 mb-6">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 sm:space-x-4 w-full max-w-md mx-auto">
+              <Button
+                onClick={handleShare}
+                className="mystical-button from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
+              >
+                <Share className="mr-2" size={18} />
+                결과 공유
+              </Button>
+              <Button
+                onClick={handleDownload}
+                className="mystical-button from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
+              >
+                <Download className="mr-2" size={18} />
+                PDF 저장
+              </Button>
+              <Button
+                onClick={onNewAnalysis}
+                className="mystical-button from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full col-span-2 mt-1 touch-manipulation"
+              >
+                <RotateCcw className="mr-2" size={18} />
+                새 분석
+              </Button>
+            </div>
+            
+            <div className="w-full max-w-md mx-auto mt-2">
+              <Button
+                onClick={handleInstagramShare}
+                className="mystical-button from-pink-500 via-purple-500 to-yellow-500 hover:from-pink-400 hover:via-purple-400 hover:to-yellow-400 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
+              >
+                <Instagram className="mr-2" size={18} />
+                인스타그램으로 공유
+                <span className="ml-2 text-yellow-200 text-xs font-medium animate-pulse">✨ HOT</span>
+              </Button>
+            </div>
+          </div>
+          
+          {/* Enhanced Analysis Table - 매트릭스 시각화와 버튼 아래로 이동 */}
           <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-xl p-4 sm:p-6 border border-white/10 backdrop-blur-sm">
             <h4 className="text-xl font-bold text-white mb-4 sm:mb-6 text-center">타로카드 분석</h4>
             
@@ -657,47 +695,7 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
       )}
 
       {showInterpretations && (
-        <>
-          <InterpretationTabs matrixPoints={matrixPoints} mode={result.mode} />
-          
-          {/* Action Buttons */}
-          <div className="flex flex-col items-center gap-4 sm:gap-6">
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 sm:space-x-4 w-full max-w-md mx-auto">
-              <Button
-                onClick={handleShare}
-                className="mystical-button from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
-              >
-                <Share className="mr-2" size={18} />
-                결과 공유
-              </Button>
-              <Button
-                onClick={handleDownload}
-                className="mystical-button from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
-              >
-                <Download className="mr-2" size={18} />
-                PDF 저장
-              </Button>
-              <Button
-                onClick={onNewAnalysis}
-                className="mystical-button from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full col-span-2 mt-1 touch-manipulation"
-              >
-                <RotateCcw className="mr-2" size={18} />
-                새 분석
-              </Button>
-            </div>
-            
-            <div className="w-full max-w-md mx-auto mt-2">
-              <Button
-                onClick={handleInstagramShare}
-                className="mystical-button from-pink-500 via-purple-500 to-yellow-500 hover:from-pink-400 hover:via-purple-400 hover:to-yellow-400 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
-              >
-                <Instagram className="mr-2" size={18} />
-                인스타그램으로 공유
-                <span className="ml-2 text-yellow-200 text-xs font-medium animate-pulse">✨ HOT</span>
-              </Button>
-            </div>
-          </div>
-        </>
+        <InterpretationTabs matrixPoints={matrixPoints} mode={result.mode} />
       )}
     </div>
   );
