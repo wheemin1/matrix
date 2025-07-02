@@ -55,9 +55,10 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-10 sm:pt-16 pb-6 sm:pb-8 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* Hero Section - 분석 결과 페이지에서는 표시하지 않음 */}
+      {currentStep !== 'results' && (
+        <section className="pt-10 sm:pt-16 pb-6 sm:pb-8 px-4">
+          <div className="max-w-4xl mx-auto text-center">
           {/* Constellation background */}
           <div className="constellation-bg hidden sm:block">
             <svg className="w-full h-full" viewBox="0 0 800 600">
@@ -108,6 +109,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 pb-10 sm:pb-16">
