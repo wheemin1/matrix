@@ -1,18 +1,35 @@
 [build]
   base = "."
   publish = "dist"
-  command = "npm run build:client"
+  command = "npm run build:client && npm run build:functions"
 
 [build.environment]
   NODE_VERSION = "20"
   VITE_API_URL = "/.netlify/functions"
 
-# 클라이언트 사이드 라우팅을 위한 리다이렉트 설정
+# Client-side routing redirects
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# 서버리스 함수 설정
+# API redirects for serverless functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Serverless functions configuration
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Headers to improve security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' *.netlify.app;"
