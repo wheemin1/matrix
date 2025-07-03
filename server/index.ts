@@ -6,6 +6,21 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// MIME 타입 설정
+app.use((req, res, next) => {
+  const path = req.path;
+  if (path.endsWith('.json')) {
+    res.type('application/json');
+  } else if (path.endsWith('.js')) {
+    res.type('application/javascript');
+  } else if (path.endsWith('.css')) {
+    res.type('text/css');
+  } else if (path.endsWith('.svg')) {
+    res.type('image/svg+xml');
+  }
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

@@ -4,6 +4,11 @@ export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    fontFamily: {
+      sans: ["Pretendard", "system-ui", "sans-serif"],
+      serif: ["Noto Serif KR", "serif"],
+      pretendard: ["Pretendard", "system-ui", "sans-serif"],
+    },
     extend: {
       borderRadius: {
         lg: "var(--radius)",
