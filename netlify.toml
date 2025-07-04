@@ -9,14 +9,21 @@
 
 # Force HTTPS - 모든 HTTP 요청을 HTTPS로 리다이렉션
 [[redirects]]
-  from = "http://destiny33.site/*"
-  to = "https://destiny33.site/:splat"
+  from = "http://www.destiny33.site/*"
+  to = "https://www.destiny33.site/:splat"
+  status = 301
+  force = true
+
+# Redirect non-www to www (SEO best practice)
+[[redirects]]
+  from = "https://destiny33.site/*"
+  to = "https://www.destiny33.site/:splat"
   status = 301
   force = true
 
 [[redirects]]
-  from = "http://*.destiny33.site/*"
-  to = "https://*.destiny33.site/:splat"
+  from = "http://destiny33.site/*"
+  to = "https://www.destiny33.site/:splat"
   status = 301
   force = true
 
