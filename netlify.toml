@@ -7,23 +7,10 @@
   NODE_VERSION = "20"
   VITE_API_URL = "/.netlify/functions"
 
-# Force HTTPS - 모든 HTTP 요청을 HTTPS로 리다이렉션
+# Force HTTPS - 간소화된 버전으로 문제 해결
 [[redirects]]
-  from = "http://www.destiny33.site/*"
-  to = "https://www.destiny33.site/:splat"
-  status = 301
-  force = true
-
-# Redirect non-www to www (SEO best practice)
-[[redirects]]
-  from = "https://destiny33.site/*"
-  to = "https://www.destiny33.site/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://destiny33.site/*"
-  to = "https://www.destiny33.site/:splat"
+  from = "http://*"
+  to = "https://:splat"
   status = 301
   force = true
 
