@@ -7,13 +7,6 @@
   NODE_VERSION = "20"
   VITE_API_URL = "/.netlify/functions"
 
-# Force HTTPS - 간소화된 버전으로 문제 해결
-[[redirects]]
-  from = "http://*"
-  to = "https://:splat"
-  status = 301
-  force = true
-
 # Security headers
 [[headers]]
   for = "/*"
