@@ -7,6 +7,20 @@
   NODE_VERSION = "20"
   VITE_API_URL = "/.netlify/functions"
 
+# CSS 파일 MIME 타입 설정
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Content-Type = "text/css"
+    Cache-Control = "public, max-age=31536000"
+
+# 정적 파일 캐싱 및 MIME 타입 설정
+[[headers]]
+  for = "/src/styles/*"
+  [headers.values]
+    Content-Type = "text/css"
+    Cache-Control = "public, max-age=31536000"
+
 # Security headers
 [[headers]]
   for = "/*"
@@ -17,6 +31,12 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Content-Security-Policy = "default-src 'self'; connect-src 'self' https://*; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;"
+
+# 정적 리소스에 대한 리다이렉트 제외 규칙 (CSS 파일이 HTML로 리다이렉트되는 것 방지)
+[[redirects]]
+  from = "/src/styles/*"
+  to = "/src/styles/:splat"
+  status = 200
 
 # Client-side routing redirects
 [[redirects]]
