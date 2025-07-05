@@ -22,26 +22,26 @@
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://destiny33.netlify.app/og-image-new.svg</image:loc>
+      <image:loc>https://destiny33.site/og-image-new.svg</image:loc>
       <image:title>운명의 매트릭스 - 개인 분석</image:title>
     </image:image>
   </url>
 
   <!-- 커플 분석 페이지 -->
   <url>
-    <loc>https://destiny33.netlify.app/couple</loc>
+    <loc>https://destiny33.site/couple</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://destiny33.netlify.app/og-image-new.svg</image:loc>
+      <image:loc>https://destiny33.site/og-image-new.svg</image:loc>
       <image:title>운명의 매트릭스 - 커플 분석</image:title>
     </image:image>
   </url>
 
   <!-- 타로 카드 정보 페이지 -->
   <url>
-    <loc>https://destiny33.netlify.app/tarot-cards</loc>
+    <loc>https://destiny33.site/tarot-cards</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

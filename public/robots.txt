@@ -18,6 +18,13 @@ Crawl-delay: 15
 
 # Google 이미지 크롤러
 User-agent: Googlebot-Image
+Allow: /
+Crawl-delay: 15
+
+# Navercrawler
+User-agent: Yeti
+Allow: /
+Crawl-delay: 15
 Allow: /images/
 Allow: /*.jpg$
 Allow: /*.jpeg$

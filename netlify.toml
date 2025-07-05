@@ -44,6 +44,27 @@
   to = "/index.html"
   status = 200
 
+# HTTP to HTTPS 리다이렉트
+[[redirects]]
+  from = "http://destiny33.site/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
+# www to non-www 리다이렉트
+[[redirects]]
+  from = "https://www.destiny33.site/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
+# Netlify 도메인에서 커스텀 도메인으로 리다이렉트
+[[redirects]]
+  from = "https://destiny33.netlify.app/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
 # API redirects for serverless functions
 [[redirects]]
   from = "/api/*"

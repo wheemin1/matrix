@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운명의 매트릭스 로고</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .logo-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo-title {
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        .dark-bg {
+            background-color: #1a1a2e;
+        }
+        .download-btn {
+            padding: 8px 15px;
+            background-color: #6366F1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .download-btn:hover {
+            background-color: #4F46E5;
+        }
+        .instructions {
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>운명의 매트릭스 로고</h1>
+    
+    <div class="logo-container">
+        <div class="logo-box">
+            <div class="logo-title">로고 (192x192)</div>
+            <canvas id="logoCanvas" width="192" height="192" class="dark-bg"></canvas>
+            <a id="downloadLogo" class="download-btn">로고 다운로드 (PNG)</a>
+        </div>
+        
+        <div class="logo-box">
+            <div class="logo-title">아이콘 (512x512)</div>
+            <canvas id="iconCanvas" width="192" height="192" class="dark-bg"></canvas>
+            <a id="downloadIcon" class="download-btn">아이콘 다운로드 (PNG)</a>
+        </div>
+        
+        <div class="logo-box">
+            <div class="logo-title">파비콘 (32x32)</div>
+            <canvas id="faviconCanvas" width="32" height="32" class="dark-bg"></canvas>
+            <a id="downloadFavicon" class="download-btn">파비콘 다운로드 (ICO)</a>
+        </div>
+        
+        <div class="logo-box">
+            <div class="logo-title">OG 이미지 (1200x630)</div>
+            <canvas id="ogCanvas" width="300" height="157" class="dark-bg"></canvas>
+            <a id="downloadOG" class="download-btn">OG 이미지 다운로드 (PNG)</a>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h2>사용 방법</h2>
+        <ol>
+            <li>필요한 이미지를 다운로드하세요.</li>
+            <li>다운로드한 이미지를 <code>/public/</code> 디렉토리에 저장하세요:
+                <ul>
+                    <li><code>logo.png</code> - 일반 로고</li>
+                    <li><code>icon-512.png</code> - 512x512 아이콘</li>
+                    <li><code>favicon.ico</code> - 웹사이트 파비콘</li>
+                    <li><code>og-image.png</code> - 소셜 미디어 공유 이미지</li>
+                </ul>
+            </li>
+            <li>HTML에 다음과 같이 연결하세요:
+                <pre><code>&lt;link rel="icon" href="/favicon.ico" /&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/logo.png" /&gt;</code></pre>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoCanvas = document.getElementById('logoCanvas');
+            const iconCanvas = document.getElementById('iconCanvas');
+            const faviconCanvas = document.getElementById('faviconCanvas');
+            const ogCanvas = document.getElementById('ogCanvas');
+            
+            const logoCtx = logoCanvas.getContext('2d');
+            const iconCtx = iconCanvas.getContext('2d');
+            const faviconCtx = faviconCanvas.getContext('2d');
+            const ogCtx = ogCanvas.getContext('2d');
+            
+            // 로고 생성
+            generateLogo(logoCtx, logoCanvas.width);
+            generateLogo(iconCtx, iconCanvas.width);
+            generateLogo(faviconCtx, faviconCanvas.width);
+            generateOGImage(ogCtx, ogCanvas.width, ogCanvas.height);
+            
+            // 다운로드 버튼 이벤트
+            document.getElementById('downloadLogo').addEventListener('click', function() {
+                const fullSizeCanvas = document.createElement('canvas');
+                fullSizeCanvas.width = 192;
+                fullSizeCanvas.height = 192;
+                const ctx = fullSizeCanvas.getContext('2d');
+                generateLogo(ctx, fullSizeCanvas.width);
+                downloadCanvas(fullSizeCanvas, 'logo.png');
+            });
+            
+            document.getElementById('downloadIcon').addEventListener('click', function() {
+                const fullSizeCanvas = document.createElement('canvas');
+                fullSizeCanvas.width = 512;
+                fullSizeCanvas.height = 512;
+                const ctx = fullSizeCanvas.getContext('2d');
+                generateLogo(ctx, fullSizeCanvas.width);
+                downloadCanvas(fullSizeCanvas, 'icon-512.png');
+            });
+            
+            document.getElementById('downloadFavicon').addEventListener('click', function() {
+                downloadCanvas(faviconCanvas, 'favicon.ico');
+            });
+            
+            document.getElementById('downloadOG').addEventListener('click', function() {
+                const fullSizeCanvas = document.createElement('canvas');
+                fullSizeCanvas.width = 1200;
+                fullSizeCanvas.height = 630;
+                const ctx = fullSizeCanvas.getContext('2d');
+                generateOGImage(ctx, fullSizeCanvas.width, fullSizeCanvas.height);
+                downloadCanvas(fullSizeCanvas, 'og-image.png');
+            });
+            
+            // 로고 생성 함수
+            function generateLogo(ctx, size) {
+                const primaryColor = "#6366F1";
+                const secondaryColor = "#EC4899";
+                const accentColor = "#10B981";
+                const textColor = "#FFFFFF";
+                
+                // 배경
+                ctx.fillStyle = '#1a1a2e';
+                ctx.fillRect(0, 0, size, size);
+                
+                const center = size / 2;
+                const radius = size * 0.35;
+                
+                // 그리드 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = size * 0.005;
+                ctx.globalAlpha = 0.3;
+                
+                // 수직선
+                for (let i = 0; i <= 6; i++) {
+                    const x = size * (i / 6);
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, size);
+                    ctx.stroke();
+                }
+                
+                // 수평선
+                for (let i = 0; i <= 6; i++) {
+                    const y = size * (i / 6);
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(size, y);
+                    ctx.stroke();
+                }
+                
+                ctx.globalAlpha = 1;
+                
+                // 원 그리기
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = size * 0.015;
+                ctx.beginPath();
+                ctx.arc(center, center, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 내부 원
+                ctx.strokeStyle = accentColor;
+                ctx.lineWidth = size * 0.01;
+                ctx.beginPath();
+                ctx.arc(center, center, radius * 0.7, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 중앙 십자가 그리기
+                ctx.strokeStyle = textColor;
+                ctx.lineWidth = size * 0.01;
+                
+                // 수직선
+                ctx.beginPath();
+                ctx.moveTo(center, center - radius * 0.5);
+                ctx.lineTo(center, center + radius * 0.5);
+                ctx.stroke();
+                
+                // 수평선
+                ctx.beginPath();
+                ctx.moveTo(center - radius * 0.5, center);
+                ctx.lineTo(center + radius * 0.5, center);
+                ctx.stroke();
+                
+                // D33 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${size * 0.18}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('D33', center, center);
+                
+                // 원 안에 타로 카드 숫자 추가
+                ctx.font = `${size * 0.1}px Arial`;
+                
+                const positions = [
+                    {x: center, y: center - radius * 0.85, text: 'I'},
+                    {x: center + radius * 0.85, y: center, text: 'V'},
+                    {x: center, y: center + radius * 0.85, text: 'X'},
+                    {x: center - radius * 0.85, y: center, text: 'IV'}
+                ];
+                
+                positions.forEach(pos => {
+                    ctx.fillText(pos.text, pos.x, pos.y);
+                });
+            }
+            
+            // OG 이미지 생성 함수
+            function generateOGImage(ctx, width, height) {
+                const primaryColor = "#6366F1";
+                const secondaryColor = "#EC4899";
+                const accentColor = "#10B981";
+                const textColor = "#FFFFFF";
+                
+                // 배경 그라데이션
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#2a2a4e');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                // 중앙 로고 영역
+                const center = {x: width * 0.3, y: height / 2};
+                const radius = Math.min(width, height) * 0.15;
+                
+                // 그리드 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = width * 0.002;
+                ctx.globalAlpha = 0.2;
+                
+                // 수직선
+                for (let i = 0; i <= 20; i++) {
+                    const x = width * (i / 20);
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                
+                // 수평선
+                for (let i = 0; i <= 10; i++) {
+                    const y = height * (i / 10);
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                ctx.globalAlpha = 1;
+                
+                // 원 그리기
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = width * 0.006;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 내부 원
+                ctx.strokeStyle = accentColor;
+                ctx.lineWidth = width * 0.004;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, radius * 0.7, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 중앙 십자가 그리기
+                ctx.strokeStyle = textColor;
+                ctx.lineWidth = width * 0.003;
+                
+                // 수직선
+                ctx.beginPath();
+                ctx.moveTo(center.x, center.y - radius * 0.5);
+                ctx.lineTo(center.x, center.y + radius * 0.5);
+                ctx.stroke();
+                
+                // 수평선
+                ctx.beginPath();
+                ctx.moveTo(center.x - radius * 0.5, center.y);
+                ctx.lineTo(center.x + radius * 0.5, center.y);
+                ctx.stroke();
+                
+                // D33 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${width * 0.05}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('D33', center.x, center.y);
+                
+                // 원 안에 타로 카드 숫자 추가
+                ctx.font = `${width * 0.03}px Arial`;
+                
+                const positions = [
+                    {x: center.x, y: center.y - radius * 0.85, text: 'I'},
+                    {x: center.x + radius * 0.85, y: center.y, text: 'V'},
+                    {x: center.x, y: center.y + radius * 0.85, text: 'X'},
+                    {x: center.x - radius * 0.85, y: center.y, text: 'IV'}
+                ];
+                
+                positions.forEach(pos => {
+                    ctx.fillText(pos.text, pos.x, pos.y);
+                });
+                
+                // 텍스트 추가
+                ctx.font = `bold ${height * 0.12}px Arial`;
+                ctx.fillText('운명의 매트릭스 검사', width * 0.65, height * 0.4);
+                
+                ctx.font = `${height * 0.06}px Arial`;
+                ctx.fillText('MBTI·타로·사주 통합 운명 분석', width * 0.65, height * 0.6);
+            }
+            
+            // 캔버스 다운로드 함수
+            function downloadCanvas(canvas, filename) {
+                const link = document.createElement('a');
+                link.download = filename;
+                if (filename.endsWith('.ico')) {
+                    // ICO 파일은 base64로 다운로드
+                    link.href = canvas.toDataURL('image/x-icon');
+                } else {
+                    link.href = canvas.toDataURL('image/png');
+                }
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
