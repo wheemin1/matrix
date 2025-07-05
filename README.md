@@ -64,3 +64,19 @@ See [NETLIFY_SETUP.md](NETLIFY_SETUP.md) for detailed deployment instructions.
 ## License
 
 MIT
+
+## Icons and Images
+
+The project uses SVG icons and images for branding and sharing:
+
+- **Favicon & App Icon**: `public/icon-simple.svg` - A simple tarot card with stars and moon
+- **OG Image**: `public/og-simple.svg` - A minimalist OG image with text and star decorations
+- **PNG Icons**: Generated from SVGs for PWA support in various sizes (192x192, 512x512)
+
+To update the PNG icons after modifying the SVG source:
+
+```
+.\update-icons.bat
+```
+
+See `/public/icon-guide.html` for a visual guide to all icons and images.
