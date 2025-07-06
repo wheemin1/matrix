@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Stars, Share, Download, RotateCcw, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "./ui/button";
+import { useToast } from "../hooks/use-toast";
 import InterpretationTabs from "./interpretation-tabs";
-import { getTarotCard } from "@/lib/tarot-data";
+import { getTarotCard } from "../lib/tarot-data";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useMatrixPositioning } from "@/hooks/use-matrix-positioning";
+import { useIsMobile } from "../hooks/use-mobile";
+import { useMatrixPositioning } from "../hooks/use-matrix-positioning";
 
 interface MatrixVisualizationProps {
   result: any;
@@ -15,9 +15,9 @@ interface MatrixVisualizationProps {
 }
 
 export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVisualizationProps) {
-  const [showLoading, setShowLoading] = useState(false); // 로딩 비활성화
-  const [showMatrix, setShowMatrix] = useState(true); // 매트릭스 바로 표시
-  const [showInterpretations, setShowInterpretations] = useState(true); // 해석 바로 표시
+  const [showLoading, setShowLoading] = useState(true);
+  const [showMatrix, setShowMatrix] = useState(false);
+  const [showInterpretations, setShowInterpretations] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
   const [containerSize, setContainerSize] = useState(500); // 컨테이너 기본 크기
   const containerRef = useRef<HTMLDivElement>(null);
@@ -26,6 +26,16 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
   const { toast } = useToast();
 
   useEffect(() => {
+    // Simulate loading animation
+    const timer1 = setTimeout(() => {
+      setShowLoading(false);
+      setShowMatrix(true);
+    }, 2000); // 로딩 시간 단축
+
+    const timer2 = setTimeout(() => {
+      setShowInterpretations(true);
+    }, 2500); // 상세 해석도 더 빨리 표시
+
     // 최적의 컨테이너 크기 계산 및 리사이즈 이벤트 처리
     const updateContainerSize = () => {
       if (containerRef.current) {
@@ -86,6 +96,8 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
     window.addEventListener('resize', updateContainerSize);
 
     return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
       window.removeEventListener('resize', updateContainerSize);
     };
   }, [isMobile]);
@@ -137,6 +149,8 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
       });
     }
   };
+
+  // Instagram 공유 기능 제거됨
 
   const handleDownload = async () => {
     try {
@@ -234,10 +248,22 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
   const title = result.mode === 'couple' 
     ? `${result.person1.name}과 ${result.person2.name}의 데스티니 매트릭스`
     : `${result.name}의 데스티니 매트릭스`;
-  const mode = result.mode || 'personal';
+  const mode = result.mode;
 
   return (
     <div className="w-full text-white">
+      {showLoading && (
+        <div className="glass-card p-8 sm:p-16 text-center">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 relative">
+            <div className="absolute inset-0 border-4 border-white/30 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-yellow-400 rounded-full border-t-transparent animate-spin"></div>
+            <div className="absolute inset-2 border-4 border-purple-400 rounded-full border-b-transparent animate-spin" style={{ animationDirection: 'reverse', animationDuration: '2s' }}></div>
+          </div>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">운명의 매트릭스를 계산하고 있습니다...</h3>
+          <p className="text-sm sm:text-base text-white/70">잠시만 기다려주세요. 우주의 에너지를 읽어내는 중입니다.</p>
+        </div>
+      )}
+
       {showMatrix && (
         <>
           <div className="glass-card p-4 sm:p-6 md:p-8 mb-8">
@@ -605,14 +631,8 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
               </Button>
             </div>
           </div>
-
-          {/* 상세 해석 탭 컴포넌트 - 항상 표시되도록 변경 */}
-          <InterpretationTabs 
-            matrixPoints={matrixPoints} 
-            mode={mode} 
-          />
         </>
       )}
     </div>
   );
-}
+};

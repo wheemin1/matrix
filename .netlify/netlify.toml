@@ -1,0 +1,157 @@
+functionsDirectory = "C:\\web\\DestinyMatrixAnalyzer\\netlify\\functions"
+functionsDirectoryOrigin = "config"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+
+[build]
+publish = "C:\\web\\DestinyMatrixAnalyzer\\dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build:client && npm run build:functions"
+base = "C:\\web\\DestinyMatrixAnalyzer"
+functions = "C:\\web\\DestinyMatrixAnalyzer\\netlify\\functions"
+
+[build.environment]
+NODE_VERSION = "20"
+VITE_API_URL = "/.netlify/functions"
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+node_bundler = "esbuild"
+
+[[headers]]
+for = "*.css"
+
+[headers.values]
+Content-Type = "text/css"
+Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+for = "*.svg"
+
+[headers.values]
+Cache-Control = "public, max-age=86400"
+
+[[headers]]
+for = "*.png"
+
+[headers.values]
+Cache-Control = "public, max-age=86400"
+
+[[headers]]
+for = "/og-simple.svg"
+
+[headers.values]
+Cache-Control = "public, max-age=3600"
+Content-Type = "image/svg+xml"
+
+[[headers]]
+for = "/icon-simple.svg"
+
+[headers.values]
+Cache-Control = "public, max-age=3600"
+Content-Type = "image/svg+xml"
+
+[[headers]]
+for = "/src/styles/*"
+
+[headers.values]
+Content-Type = "text/css"
+Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "DENY"
+X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+Content-Security-Policy = "default-src 'self'; connect-src 'self' https://*; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;"
+
+[[redirects]]
+from = "/src/styles/*"
+to = "/src/styles/:splat"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "http://destiny33.site/*"
+to = "https://destiny33.site/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "https://www.destiny33.site/*"
+to = "https://destiny33.site/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "https://destiny33.netlify.app/*"
+to = "https://destiny33.site/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
