@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Stars, Share, Download, RotateCcw, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "./ui/button";
+import { useToast } from "../hooks/use-toast";
 import InterpretationTabs from "./interpretation-tabs";
-import { getTarotCard } from "@/lib/tarot-data";
+import { getTarotCard } from "../lib/tarot-data";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useIsMobile } from "../hooks/use-mobile";
+import { useMatrixPositioning } from "../hooks/use-matrix-positioning";
 
 interface MatrixVisualizationProps {
   result: any;
@@ -17,6 +19,10 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
   const [showMatrix, setShowMatrix] = useState(false);
   const [showInterpretations, setShowInterpretations] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
+  const [containerSize, setContainerSize] = useState(500); // 컨테이너 기본 크기
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const { deviceConfig, calculateOptimizedPositions } = useMatrixPositioning();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -30,11 +36,74 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
       setShowInterpretations(true);
     }, 2500); // 상세 해석도 더 빨리 표시
 
+    // 최적의 컨테이너 크기 계산 및 리사이즈 이벤트 처리
+    const updateContainerSize = () => {
+      if (containerRef.current) {
+        // 화면 크기 및 비율 계산
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const aspectRatio = screenWidth / screenHeight;
+        const containerWidth = containerRef.current.parentElement?.clientWidth || screenWidth;
+        
+        // 컨테이너 최대 너비 (부모 컨테이너의 95%)
+        const maxWidth = Math.min(containerWidth * 0.95, screenWidth * 0.95);
+        
+        // 사용 가능한 최대 높이 (화면 높이의 일정 비율)
+        // 모바일에서는 네비게이션 바 등을 고려하여 더 작은 비율 사용
+        const maxHeightRatio = isMobile ? 0.6 : 0.7;
+        const maxHeight = screenHeight * maxHeightRatio;
+        
+        // 화면 크기에 따른 최적화된 크기 계산
+        let computedSize;
+        
+        if (isMobile) {
+          if (screenWidth < 360) {
+            // 매우 작은 화면 (iPhone SE 등)
+            computedSize = Math.min(maxWidth * 0.98, maxHeight);
+          } else if (screenWidth < 480) {
+            // 작은 모바일 화면
+            computedSize = Math.min(maxWidth * 0.96, maxHeight);
+          } else {
+            // 큰 모바일 화면 (태블릿 등)
+            computedSize = Math.min(maxWidth * 0.94, maxHeight);
+          }
+        } else {
+          // 데스크톱 환경에서
+          if (aspectRatio > 1.5) {
+            // 가로로 매우 긴 화면 (와이드 모니터)
+            computedSize = Math.min(maxWidth * 0.85, maxHeight);
+          } else if (aspectRatio > 1) {
+            // 일반적인 가로 화면
+            computedSize = Math.min(maxWidth * 0.8, maxHeight);
+          } else {
+            // 세로로 긴 화면 (태블릿 세로 모드 등)
+            computedSize = Math.min(maxWidth * 0.95, maxHeight);
+          }
+        }
+        
+        // 최소 크기 보장 (UI 요소가 너무 작아지지 않도록)
+        computedSize = Math.max(computedSize, 280);
+        
+        // Safari에서 소수점으로 인한 렌더링 문제 방지를 위해 정수로 반올림
+        setContainerSize(Math.floor(computedSize));
+      }
+    };
+
+    // 초기 크기 설정
+    updateContainerSize();
+
+    // 리사이즈 이벤트 리스너
+    window.addEventListener('resize', updateContainerSize);
+
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
+      window.removeEventListener('resize', updateContainerSize);
     };
-  }, []);
+  }, [isMobile]);
+
+  // 최적화된 매트릭스 포인트 위치 계산
+  const optimizedPositions = calculateOptimizedPositions(result.matrixPoints, containerSize);
 
   const handlePointClick = (pointNumber: number) => {
     setSelectedPoint(pointNumber);
@@ -182,138 +251,163 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
   const mode = result.mode;
 
   return (
-    <div className="space-y-4 sm:space-y-6 max-w-full">
+    <div className="w-full text-white">
+      {showLoading && (
+        <div className="glass-card p-8 sm:p-16 text-center">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 relative">
+            <div className="absolute inset-0 border-4 border-white/30 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-yellow-400 rounded-full border-t-transparent animate-spin"></div>
+            <div className="absolute inset-2 border-4 border-purple-400 rounded-full border-b-transparent animate-spin" style={{ animationDirection: 'reverse', animationDuration: '2s' }}></div>
+          </div>
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">운명의 매트릭스를 계산하고 있습니다...</h3>
+          <p className="text-sm sm:text-base text-white/70">잠시만 기다려주세요. 우주의 에너지를 읽어내는 중입니다.</p>
+        </div>
+      )}
+
       {showMatrix && (
         <>
-          <div className="glass-card p-4 sm:p-6 md:p-8">
-            {/* Matrix Chart - 최상단에 배치 */}
-            <div className="matrix-visualization-container flex flex-col items-center justify-center mb-6 px-2 sm:px-0">
-              <div className="text-center mb-4 sm:mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">{title}</h3>
-                <p className="text-sm text-white/70">각 숫자를 클릭하면 상세한 해석을 볼 수 있습니다</p>
+          <div className="glass-card p-4 sm:p-6 md:p-8 mb-8">
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
+                {result.mode === 'couple' 
+                  ? `${result.person1.name}과 ${result.person2.name}의 운명 매트릭스`
+                  : `${result.name}의 운명 매트릭스`}
+              </h2>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  onClick={handleShare}
+                  className="rounded-full bg-white/10 border-white/20 hover:bg-white/20"
+                >
+                  <Share className="h-4 w-4 text-white" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  onClick={handleDownload}
+                  className="rounded-full bg-white/10 border-white/20 hover:bg-white/20"
+                >
+                  <Download className="h-4 w-4 text-white" />
+                </Button>
               </div>
-              {/* 매트릭스 시각화 컴포넌트 */}
-              <div className="relative w-[330px] h-[330px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[580px] lg:h-[580px] bg-gradient-to-br from-indigo-900/20 to-purple-900/20 rounded-full border border-white/10 transform-gpu touch-manipulation">
-                {/* Outer Circle with Age Markers */}
-                <div className="absolute inset-0 border-2 border-white/30 rounded-full"></div>
+            </div>
+            
+            <div id="matrix-diagram-container" className="relative w-full flex justify-center my-4">
+              <div 
+                ref={containerRef}
+                className="matrix-diagram relative bg-black/40 rounded-lg border border-white/10 backdrop-blur-md matrix-visualization-container"
+                style={{ 
+                  width: `${containerSize}px`, 
+                  height: `${containerSize}px`,
+                  maxWidth: '100%',
+                  margin: '0 auto',
+                  overflow: 'visible',
+                  aspectRatio: '1/1', // 정사각형 비율 강제
+                  boxSizing: 'border-box',
+                  position: 'relative',
+                  boxShadow: '0 0 30px rgba(0, 0, 0, 0.3)'
+                }}
+              >
+                {/* 매트릭스 배경 효과 */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20 z-0 rounded-lg"></div>
+                <div className="absolute inset-0 bg-[url('/matrix-bg.svg')] bg-no-repeat bg-center bg-contain opacity-10 z-1 rounded-lg"></div>
                 
-                {/* Inner geometric structure */}
-                {/* 내부 배경 그라데이션 원 추가 */}
-                <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-indigo-800/10 to-purple-600/10 border border-white/5"></div>
-                
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 500 500">
-                  <defs>
-                    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
-                      <stop offset="100%" stopColor="rgba(255,255,255,0.1)" />
-                    </linearGradient>
-                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="2" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
-                  <g stroke="url(#lineGradient)" strokeWidth="1.5" fill="none" filter="url(#glow)">
-                    {/* Outer diamond */}
-                    <polygon points="250,50 430,250 250,450 70,250" />
-                    {/* Inner diamond */}
-                    <polygon points="250,110 370,250 250,390 130,250" />
-                    {/* Central cross */}
-                    <line x1="250" y1="110" x2="250" y2="390" />
-                    <line x1="130" y1="250" x2="370" y2="250" />
-                    {/* Diagonal connections */}
-                    <line x1="250" y1="110" x2="370" y2="250" />
-                    <line x1="370" y1="250" x2="250" y2="390" />
-                    <line x1="250" y1="390" x2="130" y2="250" />
-                    <line x1="130" y1="250" x2="250" y2="110" />
-                    {/* Heart symbol in center */}
-                    <path d="M240 240 c0,-10 10,-15 12,-5 c2,-10 12,-5 12,5 c0,8 -12,20 -12,20 s-12,-12 -12,-20 z" fill="rgba(255,20,147,0.8)" />
-                  </g>
+                {/* 연결선 SVG */}
+                <svg 
+                  className="absolute inset-0 z-10 pointer-events-none" 
+                  style={{ overflow: 'visible' }}
+                  viewBox={`0 0 ${containerSize} ${containerSize}`}
+                  preserveAspectRatio="xMidYMid meet"
+                  width="100%"
+                  height="100%"
+                >
+                  {/* 중앙에서 주요 포인트로의 연결선 */}
+                  {['spiritualPurpose', 'talent', 'karma', 'behavior'].map((key) => (
+                    <line 
+                      key={`center-${key}`}
+                      x1={optimizedPositions.coreEnergy.pixelX}
+                      y1={optimizedPositions.coreEnergy.pixelY}
+                      x2={optimizedPositions[key].pixelX}
+                      y2={optimizedPositions[key].pixelY}
+                      stroke="rgba(255, 255, 255, 0.2)"
+                      strokeWidth="1"
+                    />
+                  ))}
+                  
+                  {/* 주요 포인트 간의 연결선 (다이아몬드 형태) */}
+                  {[
+                    ['spiritualPurpose', 'talent'],
+                    ['talent', 'karma'],
+                    ['karma', 'behavior'],
+                    ['behavior', 'spiritualPurpose']
+                  ].map(([start, end], index) => (
+                    <line 
+                      key={`main-${index}`}
+                      x1={optimizedPositions[start].pixelX}
+                      y1={optimizedPositions[start].pixelY}
+                      x2={optimizedPositions[end].pixelX}
+                      y2={optimizedPositions[end].pixelY}
+                      stroke="rgba(255, 255, 255, 0.2)"
+                      strokeWidth="1"
+                    />
+                  ))}
+                  
+                  {/* 내부 포인트 연결선 */}
+                  {[
+                    ['additional1', 'spiritualPurpose'],
+                    ['additional1', 'talent'],
+                    ['additional2', 'talent'],
+                    ['additional2', 'karma'],
+                    ['additional3', 'karma'],
+                    ['additional3', 'behavior'],
+                    ['additional4', 'behavior'],
+                    ['additional4', 'spiritualPurpose']
+                  ].map(([inner, main], index) => (
+                    <line 
+                      key={`inner-${index}`}
+                      x1={optimizedPositions[inner].pixelX}
+                      y1={optimizedPositions[inner].pixelY}
+                      x2={optimizedPositions[main].pixelX}
+                      y2={optimizedPositions[main].pixelY}
+                      stroke="rgba(255, 255, 255, 0.1)"
+                      strokeWidth="1"
+                    />
+                  ))}
+                  
+                  {/* 외부 포인트 연결선 */}
+                  {[
+                    ['outer1', 'spiritualPurpose'],
+                    ['outer2', 'talent'],
+                    ['outer3', 'karma'],
+                    ['outer4', 'behavior']
+                  ].map(([outer, main], index) => (
+                    <line 
+                      key={`outer-${index}`}
+                      x1={optimizedPositions[outer].pixelX}
+                      y1={optimizedPositions[outer].pixelY}
+                      x2={optimizedPositions[main].pixelX}
+                      y2={optimizedPositions[main].pixelY}
+                      stroke="rgba(255, 255, 255, 0.1)"
+                      strokeDasharray="4,4"
+                      strokeWidth="1"
+                    />
+                  ))}
                 </svg>
                 
-                {/* Matrix Points with enhanced styling */}
-                {/* Top - Spiritual Purpose */}
+                {/* 중앙 핵심 에너지 포인트 */}
                 <div 
-                  className="matrix-point absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
+                  className="matrix-point absolute rounded-full flex items-center justify-center text-white font-bold cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
                   style={{
-                    left: '50%',
-                    top: '6%', // 더 위쪽으로 이동 (8% -> 6%)
+                    left: `${optimizedPositions.coreEnergy.pixelX}px`,
+                    top: `${optimizedPositions.coreEnergy.pixelY}px`,
+                    width: `${optimizedPositions.coreEnergy.size * 2}px`,
+                    height: `${optimizedPositions.coreEnergy.size * 2}px`,
                     transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
-                    boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)',
-                    padding: '12px', // 터치 영역 확장
-                    zIndex: 30 // z-index 값 증가 (5 -> 30)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.spiritualPurpose)}
-                  aria-label={`영적 목적: ${matrixPoints.spiritualPurpose}번 카드`}
-                >
-                  {matrixPoints.spiritualPurpose}
-                </div>
-                
-                {/* Right - Talent */}
-                <div 
-                  className="matrix-point absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    right: '6%', // 더 오른쪽으로 이동 (8% -> 6%)
-                    top: '50%',
-                    transform: 'translate(50%, -50%)',
-                    background: 'linear-gradient(135deg, #10B981, #059669)',
-                    boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)',
-                    padding: '12px', // 터치 영역 확장
-                    zIndex: 30 // z-index 값 증가 (5 -> 30)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.talent)}
-                  aria-label={`재능: ${matrixPoints.talent}번 카드`}
-                >
-                  {matrixPoints.talent}
-                </div>
-                
-                {/* Bottom - Karma */}
-                <div 
-                  className="matrix-point absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '50%',
-                    bottom: '6%', // 더 아래쪽으로 이동 (8% -> 6%)
-                    transform: 'translate(-50%, 50%)',
-                    background: 'linear-gradient(135deg, #EF4444, #DC2626)',
-                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.4)',
-                    padding: '12px', // 터치 영역 확장
-                    zIndex: 30 // z-index 값 증가 (5 -> 30)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.karma)}
-                  aria-label={`카르마: ${matrixPoints.karma}번 카드`}
-                >
-                  {matrixPoints.karma}
-                </div>
-                
-                {/* Left - Behavior */}
-                <div 
-                  className="matrix-point absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg cursor-pointer transition-all duration-300 border-2 border-white/40 shadow-xl hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '6%', // 더 왼쪽으로 이동 (8% -> 6%)
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
-                    boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)',
-                    padding: '12px', // 터치 영역 확장
-                    zIndex: 30 // z-index 값 증가 (5 -> 30)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.behavior)}
-                  aria-label={`행동: ${matrixPoints.behavior}번 카드`}
-                >
-                  {matrixPoints.behavior}
-                </div>
-                
-                {/* Center - Core Energy */}
-                <div 
-                  className="matrix-point absolute w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl cursor-pointer transition-all duration-300 border-2 sm:border-3 border-white/50 shadow-2xl hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                    boxShadow: '0 0 30px rgba(245, 158, 11, 0.6)',
-                    padding: '14px', // 터치 영역 확장
-                    zIndex: 50 // 가장 위에 표시되도록 z-index 값 증가 (6 -> 50)
+                    background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                    boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+                    fontSize: `${Math.max(optimizedPositions.coreEnergy.size * 0.9, 12)}px`,
+                    zIndex: deviceConfig.zIndexLevel.center
                   }}
                   onClick={() => handlePointClick(matrixPoints.coreEnergy)}
                   aria-label={`핵심 에너지: ${matrixPoints.coreEnergy}번 카드`}
@@ -321,144 +415,109 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                   {matrixPoints.coreEnergy}
                 </div>
                 
-                {/* Additional inner points - 위치 조정해서 더 넓게 배치 */}
-                <div 
-                  className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '78%', // 더 오른쪽으로 이동 (75% -> 78%)
-                    top: '22%', // 더 위쪽으로 이동 (25% -> 22%)
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
-                    boxShadow: '0 0 15px rgba(59, 130, 246, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 25 // z-index 값 증가 (4 -> 25)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.additional1)}
-                  aria-label={`추가 포인트 1: ${matrixPoints.additional1}번 카드`}
-                >
-                  {matrixPoints.additional1}
-                </div>
-                <div 
-                  className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '78%', // 더 오른쪽으로 이동 (75% -> 78%)
-                    top: '78%', // 더 아래쪽으로 이동 (75% -> 78%)
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #F97316, #EA580C)',
-                    boxShadow: '0 0 15px rgba(249, 115, 22, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 25 // z-index 값 증가 (4 -> 25)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.additional2)}
-                  aria-label={`추가 포인트 2: ${matrixPoints.additional2}번 카드`}
-                >
-                  {matrixPoints.additional2}
-                </div>
-                <div 
-                  className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '22%', // 더 왼쪽으로 이동 (25% -> 22%)
-                    top: '78%', // 더 아래쪽으로 이동 (75% -> 78%)
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #EC4899, #DB2777)',
-                    boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 25 // z-index 값 증가 (4 -> 25)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.additional3)}
-                  aria-label={`추가 포인트 3: ${matrixPoints.additional3}번 카드`}
-                >
-                  {matrixPoints.additional3}
-                </div>
-                <div 
-                  className="matrix-point absolute w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '22%', // 더 왼쪽으로 이동 (25% -> 22%)
-                    top: '22%', // 더 위쪽으로 이동 (25% -> 22%)
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #06B6D4, #0891B2)',
-                    boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 25 // z-index 값 증가 (4 -> 25)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.additional4)}
-                  aria-label={`추가 포인트 4: ${matrixPoints.additional4}번 카드`}
-                >
-                  {matrixPoints.additional4}
-                </div>
+                {/* 메인 포인트 (4개) */}
+                {['spiritualPurpose', 'talent', 'karma', 'behavior'].map((key) => (
+                  <div 
+                    key={key}
+                    className="matrix-point absolute rounded-full flex items-center justify-center text-white font-bold cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
+                    style={{
+                      left: `${optimizedPositions[key].pixelX}px`,
+                      top: `${optimizedPositions[key].pixelY}px`,
+                      width: `${optimizedPositions[key].size * 2}px`,
+                      height: `${optimizedPositions[key].size * 2}px`,
+                      transform: 'translate(-50%, -50%)',
+                      background: key === 'spiritualPurpose' 
+                        ? 'linear-gradient(135deg, #8B5CF6, #6D28D9)' // 보라색
+                        : key === 'talent' 
+                          ? 'linear-gradient(135deg, #10B981, #059669)' // 녹색
+                          : key === 'karma' 
+                            ? 'linear-gradient(135deg, #EF4444, #DC2626)' // 빨간색
+                            : 'linear-gradient(135deg, #3B82F6, #2563EB)', // 파란색
+                      boxShadow: key === 'spiritualPurpose' 
+                        ? '0 0 15px rgba(139, 92, 246, 0.4)'
+                        : key === 'talent' 
+                          ? '0 0 15px rgba(16, 185, 129, 0.4)'
+                          : key === 'karma' 
+                            ? '0 0 15px rgba(239, 68, 68, 0.4)'
+                            : '0 0 15px rgba(59, 130, 246, 0.4)',
+                      fontSize: `${Math.max(optimizedPositions[key].size * 0.9, 11)}px`,
+                      zIndex: deviceConfig.zIndexLevel.main
+                    }}
+                    onClick={() => handlePointClick(matrixPoints[key])}
+                    aria-label={`${key}: ${matrixPoints[key]}번 카드`}
+                  >
+                    {matrixPoints[key]}
+                  </div>
+                ))}
                 
-                {/* Outer ring points - 배치를 좀 더 바깥쪽으로 */}
-                <div 
-                  className="matrix-point absolute w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '50%',
-                    top: '1%', // 더 바깥쪽으로 이동 (3% -> 1%)
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #6366F1, #4F46E5)',
-                    boxShadow: '0 0 15px rgba(99, 102, 241, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 20 // z-index 값 증가 (4 -> 20)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.outer1)}
-                  aria-label={`외부 포인트 1: ${matrixPoints.outer1}번 카드`}
-                >
-                  {matrixPoints.outer1}
-                  <span className="absolute -top-6 text-[10px] text-white/60 font-medium">0세</span>
-                </div>
-                <div 
-                  className="matrix-point absolute w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    right: '1%', // 더 바깥쪽으로 이동 (3% -> 1%)
-                    top: '50%',
-                    transform: 'translate(50%, -50%)',
-                    background: 'linear-gradient(135deg, #14B8A6, #0D9488)',
-                    boxShadow: '0 0 15px rgba(20, 184, 166, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 20 // z-index 값 증가 (4 -> 20)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.outer2)}
-                  aria-label={`외부 포인트 2: ${matrixPoints.outer2}번 카드`}
-                >
-                  {matrixPoints.outer2}
-                  <span className="absolute -right-7 text-[10px] text-white/60 font-medium">30세</span>
-                </div>
-                <div 
-                  className="matrix-point absolute w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '50%',
-                    bottom: '1%', // 더 바깥쪽으로 이동 (3% -> 1%)
-                    transform: 'translate(-50%, 50%)',
-                    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                    boxShadow: '0 0 15px rgba(245, 158, 11, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 20 // z-index 값 증가 (4 -> 20)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.outer3)}
-                  aria-label={`외부 포인트 3: ${matrixPoints.outer3}번 카드`}
-                >
-                  {matrixPoints.outer3}
-                  <span className="absolute -bottom-6 text-[10px] text-white/60 font-medium">60세</span>
-                </div>
-                <div 
-                  className="matrix-point absolute w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm cursor-pointer transition-all duration-300 border-2 border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
-                  style={{
-                    left: '1%', // 더 바깥쪽으로 이동 (3% -> 1%)
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    background: 'linear-gradient(135deg, #059669, #047857)',
-                    boxShadow: '0 0 15px rgba(5, 150, 105, 0.4)',
-                    padding: '10px', // 터치 영역 확장
-                    zIndex: 20 // z-index 값 증가 (4 -> 20)
-                  }}
-                  onClick={() => handlePointClick(matrixPoints.outer4)}
-                  aria-label={`외부 포인트 4: ${matrixPoints.outer4}번 카드`}
-                >
-                  {matrixPoints.outer4}
-                  <span className="absolute -left-7 text-[10px] text-white/60 font-medium">90세</span>
+                {/* 내부 포인트 (4개) */}
+                {['additional1', 'additional2', 'additional3', 'additional4'].map((key) => (
+                  <div 
+                    key={key}
+                    className="matrix-point absolute rounded-full flex items-center justify-center text-white font-bold cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
+                    style={{
+                      left: `${optimizedPositions[key].pixelX}px`,
+                      top: `${optimizedPositions[key].pixelY}px`,
+                      width: `${optimizedPositions[key].size * 2}px`,
+                      height: `${optimizedPositions[key].size * 2}px`,
+                      transform: 'translate(-50%, -50%)',
+                      background: key === 'additional1' 
+                        ? 'linear-gradient(135deg, #3B82F6, #2563EB)' // 파란색
+                        : key === 'additional2' 
+                          ? 'linear-gradient(135deg, #F97316, #EA580C)' // 주황색
+                          : key === 'additional3' 
+                            ? 'linear-gradient(135deg, #EC4899, #DB2777)' // 핑크색
+                            : 'linear-gradient(135deg, #8B5CF6, #6D28D9)', // 보라색
+                      boxShadow: key === 'additional1' 
+                        ? '0 0 15px rgba(59, 130, 246, 0.4)'
+                        : key === 'additional2' 
+                          ? '0 0 15px rgba(249, 115, 22, 0.4)'
+                          : key === 'additional3' 
+                            ? '0 0 15px rgba(236, 72, 153, 0.4)'
+                            : '0 0 15px rgba(139, 92, 246, 0.4)',
+                      fontSize: `${Math.max(optimizedPositions[key].size * 0.9, 10)}px`,
+                      zIndex: deviceConfig.zIndexLevel.inner
+                    }}
+                    onClick={() => handlePointClick(matrixPoints[key])}
+                    aria-label={`${key}: ${matrixPoints[key]}번 카드`}
+                  >
+                    {matrixPoints[key]}
+                  </div>
+                ))}
+                
+                {/* 외부 포인트 (4개) */}
+                {['outer1', 'outer2', 'outer3', 'outer4'].map((key) => (
+                  <div 
+                    key={key}
+                    className="matrix-point absolute rounded-full flex items-center justify-center text-white font-bold cursor-pointer transition-all duration-300 border border-white/30 shadow-lg hover:scale-110 active:scale-95 touch-manipulation"
+                    style={{
+                      left: `${optimizedPositions[key].pixelX}px`,
+                      top: `${optimizedPositions[key].pixelY}px`,
+                      width: `${optimizedPositions[key].size * 2}px`,
+                      height: `${optimizedPositions[key].size * 2}px`,
+                      transform: 'translate(-50%, -50%)',
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1))',
+                      boxShadow: '0 0 10px rgba(255, 255, 255, 0.2)',
+                      fontSize: `${Math.max(optimizedPositions[key].size * 0.9, 9)}px`,
+                      zIndex: deviceConfig.zIndexLevel.outer
+                    }}
+                    onClick={() => handlePointClick(matrixPoints[key])}
+                    aria-label={`${key}: ${matrixPoints[key]}번 카드`}
+                  >
+                    {matrixPoints[key]}
+                  </div>
+                ))}
+
+                {/* 시각적 요소 - 동심원 효과 */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-3/4 h-3/4 rounded-full border border-white/10 animate-pulse-slow"></div>
+                  <div className="absolute w-2/3 h-2/3 rounded-full border border-white/10 animate-pulse-slow" style={{ animationDelay: '0.5s' }}></div>
+                  <div className="absolute w-1/2 h-1/2 rounded-full border border-white/10 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute w-1/3 h-1/3 rounded-full border border-white/10 animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
                 </div>
               </div>
             </div>
-            
+
             {/* Enhanced Analysis Table - 매트릭스 시각화 아래로 이동 */}
             <div className="bg-gradient-to-br from-gray-900/50 to-gray-800/50 rounded-xl p-4 sm:p-6 border border-white/10 backdrop-blur-sm">
               <h4 className="text-xl font-bold text-white mb-4 sm:mb-6 text-center">타로카드 분석</h4>
@@ -568,23 +627,12 @@ export default function MatrixVisualization({ result, onNewAnalysis }: MatrixVis
                 className="mystical-button from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full touch-manipulation"
               >
                 <Download className="mr-2" size={18} />
-                PDF 저장
-              </Button>
-              <Button
-                onClick={onNewAnalysis}
-                className="mystical-button from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white px-4 sm:px-6 py-3 rounded-lg font-medium text-sm sm:text-base w-full col-span-2 mt-1 touch-manipulation"
-              >
-                <RotateCcw className="mr-2" size={18} />
-                새 분석
+                결과 저장
               </Button>
             </div>
           </div>
         </>
       )}
-
-      {showInterpretations && (
-        <InterpretationTabs matrixPoints={matrixPoints} mode={result.mode} />
-      )}
     </div>
   );
-}
+};

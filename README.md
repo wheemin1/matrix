@@ -40,13 +40,24 @@ A web application for analyzing and visualizing Destiny Matrix patterns, providi
    ```
 
 3. Start the development environment:
+   
+   For Windows users:
    ```
-   npm run dev
+   dev-windows.bat
    ```
-   Or use the batch files:
+   
+   Or run server and client separately:
    ```
-   run-dev.bat
+   dev-server-alt.bat  # Runs server on port 3001
+   dev-client.bat      # Runs client on next available port
    ```
+
+### Important Notes
+
+- When editing UI components, use relative imports (../../lib/utils) instead of alias paths (@/lib/utils)
+- The server runs on port 3001 in development mode
+- Make sure site.webmanifest is valid JSON with no trailing commas
+- The vite.config.ts proxy is configured to point to port 3001
 
 ### Development Scripts
 
