@@ -27,7 +27,7 @@
     MBTI·타로·사주 통합 운명 분석
   </text>
 
-  <!-- 작은 별 장식들 -->
+  <!-- 작은 별 장식 -->
   <g transform="translate(480, 220)" opacity="0.8">
     <path d="M0,-15 L3.5,-5 13,-4 6.5,3 8,13 0,8 -8,13 -6.5,3 -13,-4 -3.5,-5z" 
           fill="#FFD700" stroke="none"/>
@@ -50,6 +50,6 @@
   <!-- 하단 URL -->
   <text x="600" y="500" font-family="'Pretendard', sans-serif" font-size="28" 
         fill="#A5B4FC" text-anchor="middle" dominant-baseline="middle">
-    https://destiny33.site
+    destiny33.site
   </text>
 </svg>
