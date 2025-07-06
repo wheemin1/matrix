@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Star, User, Heart, HelpCircle, UserCircle, Sparkles } from "lucide-react";
-import ModeSelection from "@/components/mode-selection";
-import InputForm from "@/components/input-form";
-import MatrixVisualization from "@/components/matrix-visualization";
-import { Button } from "@/components/ui/button";
+import ModeSelection from "../components/mode-selection";
+import InputForm from "../components/input-form";
+import MatrixVisualization from "../components/matrix-visualization";
+import { Button } from "../components/ui/button";
 
 export default function Home() {
   const [currentStep, setCurrentStep] = useState<'selection' | 'input' | 'results'>('selection');

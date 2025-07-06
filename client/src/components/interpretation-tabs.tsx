@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Stars, Compass, Lightbulb, Route, Eye, Wand2, Infinity, TriangleAlert, Star, Heart, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getTarotCard } from "@/lib/tarot-data";
-import { useSwipe } from "@/hooks/use-swipe";
+import { Button } from "./ui/button";
+import { getTarotCard } from "../lib/tarot-data";
+import { useSwipe } from "../hooks/use-swipe";
 
 interface InterpretationTabsProps {
   matrixPoints: any;
