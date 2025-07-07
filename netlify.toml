@@ -1,11 +1,18 @@
 [build]
   base = "."
   publish = "dist"
-  command = "bash netlify-build-fix.sh && npm run build:client && npm run build:functions"
+  command = "npm run deploy:verify"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)README.md' ':(exclude)*.md' ':(exclude)package-lock.json'"
 
 [build.environment]
   NODE_VERSION = "20"
   VITE_API_URL = "/.netlify/functions"
+  # 강제 React 프로덕션 모드
+  NODE_ENV = "production"
+  # React 디버깅 비활성화
+  REACT_SKIP_WARNING = "true"
+  # 애셋 로딩 경로 설정
+  VITE_BASE_URL = "/"
 
 # CSS 파일 MIME 타입 설정
 [[headers]]

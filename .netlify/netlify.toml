@@ -8,13 +8,17 @@ plugins = []
 publish = "C:\\web\\DestinyMatrixAnalyzer\\dist"
 publishOrigin = "config"
 commandOrigin = "config"
-command = "npm run build:client && npm run build:functions"
+command = "bash netlify-build-fix.sh && npm run build:client && npm run build:functions"
 base = "C:\\web\\DestinyMatrixAnalyzer"
+ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)README.md' ':(exclude)*.md' ':(exclude)package-lock.json'"
 functions = "C:\\web\\DestinyMatrixAnalyzer\\netlify\\functions"
 
 [build.environment]
 NODE_VERSION = "20"
 VITE_API_URL = "/.netlify/functions"
+NODE_ENV = "production"
+REACT_SKIP_WARNING = "true"
+VITE_BASE_URL = "/"
 
 [build.processing]
 
@@ -44,13 +48,26 @@ Cache-Control = "public, max-age=31536000"
 for = "*.svg"
 
 [headers.values]
-Cache-Control = "public, max-age=86400"
+Cache-Control = "public, max-age=2592000"
 
 [[headers]]
 for = "*.png"
 
 [headers.values]
-Cache-Control = "public, max-age=86400"
+Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+for = "*.jpg"
+
+[headers.values]
+Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+for = "*.woff2"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000"
+Access-Control-Allow-Origin = "*"
 
 [[headers]]
 for = "/og-simple.svg"
@@ -60,11 +77,46 @@ Cache-Control = "public, max-age=3600"
 Content-Type = "image/svg+xml"
 
 [[headers]]
+for = "/og-image.png"
+
+[headers.values]
+Cache-Control = "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+Content-Type = "image/png"
+
+[[headers]]
+for = "/twitter-image.png"
+
+[headers.values]
+Cache-Control = "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+Content-Type = "image/png"
+
+[[headers]]
+for = "/kakao-image.png"
+
+[headers.values]
+Cache-Control = "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+Content-Type = "image/png"
+
+[[headers]]
 for = "/icon-simple.svg"
 
 [headers.values]
 Cache-Control = "public, max-age=3600"
 Content-Type = "image/svg+xml"
+
+[[headers]]
+for = "/site.webmanifest"
+
+[headers.values]
+Content-Type = "application/manifest+json"
+Cache-Control = "public, max-age=3600"
+
+[[headers]]
+for = "/manifest.json"
+
+[headers.values]
+Content-Type = "application/manifest+json"
+Cache-Control = "public, max-age=3600"
 
 [[headers]]
 for = "/src/styles/*"

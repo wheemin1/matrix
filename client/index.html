@@ -85,7 +85,7 @@
     <meta name="twitter:domain" content="destiny33.site" />
 
     <!-- Progressive Web App -->
-    <link rel="manifest" href="/manifest.json" type="application/manifest+json" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#6366F1" media="(prefers-color-scheme: light)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -195,6 +195,13 @@
       <strong>JavaScript를 활성화해야 '운명의 매트릭스 검사'를 정상적으로 이용할 수 있습니다.</strong>
     </noscript>
 
+    <!-- React 초기화 스크립트 -->
+    <script>
+      // React 글로벌 객체 확인 (React 관련 오류 방지)
+      window.React = window.React || {};
+      window.ReactDOM = window.ReactDOM || {};
+    </script>
+    
     <script type="module" src="/src/main.tsx" defer></script>
   </body>
 </html>
