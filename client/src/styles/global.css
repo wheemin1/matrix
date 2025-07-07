@@ -1,0 +1,391 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(263, 70%, 50%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.75rem;
+  
+  /* Custom Destiny Matrix Colors - 업그레이드된 컬러 팔레트 */
+  --mystic-50: hsl(243, 100%, 98%);
+  --mystic-100: hsl(246, 100%, 95%);
+  --mystic-200: hsl(246, 100%, 89%);
+  --mystic-300: hsl(243, 100%, 82%);
+  --mystic-400: hsl(243, 100%, 75%);
+  --mystic-500: hsl(263, 70%, 50%);
+  --mystic-600: hsl(263, 60%, 45%);
+  --mystic-700: hsl(266, 55%, 30%);
+  --mystic-800: hsl(267, 55%, 22%);
+  --mystic-900: hsl(267, 50%, 19%);
+  --mystic-950: hsl(270, 50%, 12%);
+  
+  /* 딥 퍼플 - 미드나잇 블루 그라데이션 */
+  --deep-purple: hsl(267, 45%, 24%); /* #2A1A5E */
+  --midnight-blue: hsl(254, 53%, 19%); /* #1C1346 */
+  
+  /* 골드 색상 */
+  --gold-50: hsl(48, 100%, 96%);
+  --gold-100: hsl(48, 96%, 89%);
+  --gold-200: hsl(48, 97%, 77%);
+  --gold-300: hsl(46, 97%, 65%);
+  --gold-400: hsl(43, 90%, 60%);
+  --gold-500: hsl(42, 80%, 55%); /* #D4AF37 - 골드 */
+  --gold-600: hsl(36, 75%, 49%);
+  --gold-700: hsl(30, 70%, 43%);
+  --gold-800: hsl(28, 65%, 37%);
+  --gold-900: hsl(27, 60%, 32%);
+  
+  /* 로즈 골드 */
+  --rose-gold-300: hsl(349, 40%, 82%);
+  --rose-gold-400: hsl(348, 45%, 75%);
+  --rose-gold-500: hsl(347, 45%, 70%); /* #B76E79 - 로즈 골드 */
+  --rose-gold-600: hsl(346, 45%, 60%);
+  --rose-gold-700: hsl(345, 40%, 50%);
+}
+
+@layer base {
+  /* 기본 타이포그래피 스타일 */
+  html {
+    font-family: Pretendard, system-ui, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif KR', serif;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+  }
+  
+  h1 {
+    font-size: 2.5rem; /* 40px */
+    font-weight: 700;
+  }
+  
+  h2 {
+    font-size: 2rem; /* 32px */
+    font-weight: 600;
+  }
+  
+  h3 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600;
+  }
+  
+  p, li, span, a {
+    line-height: 1.6;
+  }
+  
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    color: white;
+    background: linear-gradient(135deg, var(--deep-purple) 0%, var(--midnight-blue) 100%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, var(--gold-400), var(--gold-600));
+  }
+  
+  .glass-card {
+    backdrop-filter: blur(16px);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  
+  .mystical-button {
+    transition-property: all;
+    transition-duration: 300ms;
+    transform: translateZ(0);
+    background: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-600) 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .mystical-button:hover {
+    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  }
+  
+  .mystical-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--gold-300) 0%, var(--gold-500) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+  
+  .mystical-button:hover::before {
+    opacity: 1;
+  }
+  
+  .mystical-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease;
+  }
+  
+  .matrix-point {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition-property: all;
+    transition-duration: 300ms;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    touch-action: manipulation;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    position: absolute;
+  }
+  
+  .matrix-point:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    animation: pulse-glow 2s infinite;
+  }
+  
+  /* Touch-friendly focus effect for mobile */
+  .matrix-point:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(263, 85%, 63%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Optimize for touch interaction */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Swipe animation effect */
+.swipe-left-enter {
+  transform: translateX(100%);
+}
+.swipe-left-enter-active {
+  transform: translateX(0%);
+  transition: transform 300ms ease-in-out;
+}
+.swipe-left-exit {
+  transform: translateX(0%);
+}
+.swipe-left-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+.swipe-right-enter {
+  transform: translateX(-100%);
+}
+.swipe-right-enter-active {
+  transform: translateX(0%);
+  transition: transform 300ms ease-in-out;
+}
+.swipe-right-exit {
+  transform: translateX(0%);
+}
+.swipe-right-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); 
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.8); 
+  }
+}
+
+/* Enhanced matrix visualization animations */
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.matrix-loading {
+  animation: rotate-slow 3s linear infinite;
+}
+
+.floating-element {
+  animation: float 3s ease-in-out infinite;
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Smooth transitions for tabs */
+.tab-content {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Particle effect backgrounds */
+.constellation-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* Table hover effects */
+.analysis-table tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.constellation-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* 키보드 포커스 스타일 향상 */
+:focus-visible {
+  outline: 2px solid #FFD700 !important;
+  outline-offset: 2px;
+}
+
+.mystical-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
+  outline: 2px solid #FFD700 !important;
+  outline-offset: 2px;
+  transform: scale(1.02);
+}
+
+/* 모바일 터치 최적화를 위한 스타일 */
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .mystical-button:hover, .mystical-button:active {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+}

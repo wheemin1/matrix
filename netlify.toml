@@ -1,7 +1,7 @@
 [build]
   base = "."
   publish = "dist"
-  command = "npm run build:client && npm run build:functions"
+  command = "bash netlify-build-fix.sh && npm run build:client && npm run build:functions"
 
 [build.environment]
   NODE_VERSION = "20"
