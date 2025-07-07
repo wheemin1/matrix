@@ -5,17 +5,17 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "bash netlify-build-fix.sh && vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "build:client": "vite build",
+    "build": "npm run prepare-netlify && npx vite build && npm run build:functions",
+    "build:client": "npx vite build",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:functions": "esbuild netlify/functions/*.ts --platform=node --bundle --format=cjs --outdir=netlify/functions/build",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push",
     "prebuild": "node -e \"const fs=require('fs');if(!fs.existsSync('client/src/styles')){fs.mkdirSync('client/src/styles',{recursive:true})};fs.copyFileSync('client/src/index.css','client/src/styles/global.css');console.log('CSS 파일 준비 완료');\"",
-    "prepare-netlify": "npm install vite @vitejs/plugin-react react@18.3.1 react-dom@18.3.1 @babel/preset-react @babel/plugin-transform-react-jsx cssnano terser esbuild --save-dev && npm install react@18.3.1 react-dom@18.3.1 --save",
+    "prepare-netlify": "npm install",
     "build:optimized": "npm run prepare-netlify && npx vite build --mode production",
-    "deploy:verify": "npm run prepare-netlify && npx vite build && npm run build:functions",
+    "deploy:verify": "npm run build",
     "debug:react": "NODE_ENV=production npm run prepare-netlify && npx vite build --mode development"
   },
   "dependencies": {
