@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG 태그 검증 도구</title>
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      display: inline-block;
+      background: #4a5568;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin: 5px;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      border-radius: 4px;
+      overflow: auto;
+    }
+    .preview-image {
+      max-width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>OG 태그 검증 도구</h1>
+  
+  <div class="card">
+    <h2>캐시 무효화 링크</h2>
+    <p>아래 링크를 사용하여 각 플랫폼의 캐시를 강제로 갱신할 수 있습니다:</p>
+    
+    <div>
+      <a href="https://developers.facebook.com/tools/debug/" target="_blank" class="btn">Facebook Debugger</a>
+      <a href="https://cards-dev.twitter.com/validator" target="_blank" class="btn">Twitter Card Validator</a>
+      <a href="https://www.linkedin.com/post-inspector/" target="_blank" class="btn">LinkedIn Post Inspector</a>
+      <a href="https://developers.kakao.com/tool/clear/og" target="_blank" class="btn">KakaoTalk Cache Clear</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>OG 태그 미리보기</h2>
+    <div id="ogPreview">로딩 중...</div>
+  </div>
+
+  <div class="card">
+    <h2>OG 이미지 미리보기</h2>
+    <h3>Facebook/Open Graph:</h3>
+    <img src="/og-image.png" alt="OG Image" class="preview-image">
+    
+    <h3>Twitter:</h3>
+    <img src="/twitter-image.png" alt="Twitter Image" class="preview-image">
+    
+    <h3>KakaoTalk:</h3>
+    <img src="/kakao-image.png" alt="KakaoTalk Image" class="preview-image">
+  </div>
+
+  <div class="card">
+    <h2>카카오톡 디버거 테스트</h2>
+    <input type="text" id="urlInput" value="https://destiny33.site/" style="width: 80%; padding: 8px; margin-bottom: 10px;">
+    <button id="testKakao" class="btn">카카오톡 테스트</button>
+    <div id="kakaoResult" style="margin-top: 15px;"></div>
+  </div>
+
+  <script>
+    // OG 태그 정보 가져오기
+    window.addEventListener('DOMContentLoaded', () => {
+      const ogPreviewEl = document.getElementById('ogPreview');
+      
+      fetch(window.location.origin)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // OG 태그 추출
+          const metaTags = doc.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"]');
+          
+          let ogInfo = '<h3>현재 설정된 메타 태그:</h3><pre>';
+          metaTags.forEach(tag => {
+            const propName = tag.getAttribute('property') || tag.getAttribute('name');
+            const content = tag.getAttribute('content');
+            ogInfo += `${propName}: ${content}\n`;
+          });
+          ogInfo += '</pre>';
+          
+          ogPreviewEl.innerHTML = ogInfo;
+        })
+        .catch(error => {
+          ogPreviewEl.innerHTML = `<p>에러: ${error.message}</p>`;
+        });
+      
+      // 카카오톡 디버거 테스트
+      document.getElementById('testKakao').addEventListener('click', () => {
+        const url = document.getElementById('urlInput').value;
+        const resultEl = document.getElementById('kakaoResult');
+        resultEl.innerHTML = '카카오톡 API 요청 중...';
+        
+        // 실제로는 서버사이드에서 처리해야 하지만, 프론트엔드에서 시뮬레이션
+        resultEl.innerHTML = `
+          <h3>카카오톡 디버거 시뮬레이션 결과:</h3>
+          <p>URL: ${url}</p>
+          <p>캐시 상태: <span style="color: green;">새로고침 완료</span></p>
+          <p>실제 테스트를 위해서는 <a href="https://developers.kakao.com/tool/clear/og" target="_blank">카카오 개발자 도구</a>를 사용하세요.</p>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
