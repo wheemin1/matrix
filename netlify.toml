@@ -2,13 +2,11 @@
   base = "."
   publish = "dist"
   command = "npm run build"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)README.md' ':(exclude)*.md' ':(exclude)package-lock.json'"
 
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--prefer-offline --no-audit"
   NODE_ENV = "production"
-  VITE_API_URL = "/.netlify/functions"
 
 # CSS 파일 MIME 타입 설정
 [[headers]]
@@ -141,4 +139,7 @@
 # Serverless functions configuration
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
+  
+[functions."*"]
   node_bundler = "esbuild"

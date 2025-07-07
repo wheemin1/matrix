@@ -19,10 +19,20 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist"),
     emptyOutDir: true,
-    sourcemap: true,
+    sourcemap: false, // 소스맵 비활성화로 빌드 속도 향상
+    minify: 'esbuild', // 더 빠른 minifier 사용
+    target: 'es2020', // 모던 브라우저 타겟
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "client", "index.html"),
+      },
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-accordion', '@radix-ui/react-dialog', '@radix-ui/react-popover'],
+          motion: ['framer-motion'],
+          icons: ['lucide-react', 'react-icons'],
+        },
       },
     },
   },
