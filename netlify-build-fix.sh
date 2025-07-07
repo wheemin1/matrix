@@ -15,7 +15,13 @@ if [ ! -d "node_modules/terser" ]; then
   npm install terser --save-dev
 fi
 
-# 3. index.css를 global.css로 복사하여 빌드 에러 해결
+# 3. React 관련 Babel 플러그인 설치
+if [ ! -d "node_modules/@babel/plugin-transform-react-jsx" ]; then
+  echo "React Babel 플러그인 설치 중..."
+  npm install @babel/plugin-transform-react-jsx --save-dev
+fi
+
+# 4. index.css를 global.css로 복사하여 빌드 에러 해결
 echo "CSS 파일 설정 중..."
 mkdir -p client/src/styles
 cp client/src/index.css client/src/styles/global.css

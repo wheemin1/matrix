@@ -14,7 +14,13 @@ if not exist "node_modules\terser" (
   npm install terser --save-dev
 )
 
-REM 3. index.css를 global.css로 복사하여 빌드 에러 해결
+REM 3. React 관련 Babel 플러그인 설치
+if not exist "node_modules\@babel\plugin-transform-react-jsx" (
+  echo React Babel 플러그인 설치 중...
+  npm install @babel/plugin-transform-react-jsx --save-dev
+)
+
+REM 4. index.css를 global.css로 복사하여 빌드 에러 해결
 echo CSS 파일 설정 중...
 if not exist "client\src\styles" mkdir "client\src\styles"
 copy "client\src\index.css" "client\src\styles\global.css"

@@ -11,6 +11,13 @@ export default defineConfig({
       // React refresh 비활성화
       include: "**/*.{jsx,tsx}",
       jsxRuntime: 'automatic',
+      // React가 항상 올바르게 번들링되도록 함
+      jsxImportSource: 'react',
+      babel: {
+        plugins: [
+          ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }]
+        ]
+      }
     }),
   ],
   resolve: {
@@ -43,7 +50,10 @@ export default defineConfig({
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-      }
+      },
+      // React를 올바르게 번들링하기 위한 설정
+      external: [],
+      preserveEntrySignatures: 'strict',
     },
     reportCompressedSize: false,
     cssCodeSplit: true,
