@@ -9,7 +9,13 @@ if [ ! -d "node_modules/cssnano" ]; then
   npm install cssnano --save-dev
 fi
 
-# 2. index.css를 global.css로 복사하여 빌드 에러 해결
+# 2. terser 설치 확인
+if [ ! -d "node_modules/terser" ]; then
+  echo "terser 모듈 설치 중..."
+  npm install terser --save-dev
+fi
+
+# 3. index.css를 global.css로 복사하여 빌드 에러 해결
 echo "CSS 파일 설정 중..."
 mkdir -p client/src/styles
 cp client/src/index.css client/src/styles/global.css

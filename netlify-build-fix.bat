@@ -8,7 +8,13 @@ if not exist "node_modules\cssnano" (
   npm install cssnano --save-dev
 )
 
-REM 2. index.css를 global.css로 복사하여 빌드 에러 해결
+REM 2. terser 설치 확인
+if not exist "node_modules\terser" (
+  echo terser 모듈 설치 중...
+  npm install terser --save-dev
+)
+
+REM 3. index.css를 global.css로 복사하여 빌드 에러 해결
 echo CSS 파일 설정 중...
 if not exist "client\src\styles" mkdir "client\src\styles"
 copy "client\src\index.css" "client\src\styles\global.css"

@@ -15,12 +15,12 @@ REM 환경 변수 설정
 echo 환경 변수 설정 중...
 set VITE_ANALYZER=true
 set NODE_ENV=production
-set MINIFY=true
+set MINIFY=terser
 set SPLIT_CHUNKS=true
 
 REM 클라이언트 빌드
 echo 클라이언트 성능 최적화 빌드 중...
-npx vite build --minify=true
+npx vite build --minify=terser
 
 REM 서버리스 함수 빌드
 echo 서버리스 함수 빌드 중...
