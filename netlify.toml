@@ -34,19 +34,19 @@
 [[headers]]
   for = "/og-image.png"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    Cache-Control = "public, max-age=0, must-revalidate"
     Content-Type = "image/png"
 
 [[headers]]
   for = "/twitter-image.png"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    Cache-Control = "public, max-age=0, must-revalidate"
     Content-Type = "image/png"
 
 [[headers]]
   for = "/kakao-image.png"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    Cache-Control = "public, max-age=0, must-revalidate"
     Content-Type = "image/png"
 
 [[headers]]
