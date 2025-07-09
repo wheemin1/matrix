@@ -46,7 +46,31 @@
 [[headers]]
   for = "/og-image.png"
   [headers.values]
-    Cache-Control = "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+    Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "/twitter-image.png"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "/kakao-image.png"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "image/x-icon"
+
+[[headers]]
+  for = "/icon-*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
     Content-Type = "image/png"
 
 [[headers]]
