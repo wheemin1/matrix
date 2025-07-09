@@ -10,9 +10,14 @@
   <!-- 메인 페이지 -->
   <url>
     <loc>https://destiny33.site/</loc>
-    <lastmod>2025-07-04T12:00:00+00:00</lastmod>
+    <lastmod>2025-07-07T12:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://destiny33.site/og-image.png</image:loc>
+      <image:title>운명의 매트릭스 | 매트릭스 오브 데스티니</image:title>
+      <image:caption>운명의 매트릭스로 당신의 운명을 분석하세요</image:caption>
+    </image:image>
   </url>
 
   <!-- 개인 분석 페이지 -->
