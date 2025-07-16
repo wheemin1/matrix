@@ -48,6 +48,15 @@
   [headers.values]
     Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
     Content-Type = "image/png"
+    
+# Add specific headers for HTML content that help search engines
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=UTF-8"
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Robots-Tag = "all" 
+    X-Content-Type-Options = "nosniff"
 
 [[headers]]
   for = "/twitter-image.png"
@@ -127,11 +136,27 @@
   to = "/src/styles/:splat"
   status = 200
 
-# Client-side routing redirects
+# Client-side routing redirects with pre-rendering for SEO
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
+  
+  # Enable pre-rendering for search engines
+  [redirects.headers]
+    X-Robots-Tag = "all"
+    
+  # Only apply SPA redirect for browser requests, not search engines
+  conditions = {Cookie = ["!_prerendered=true"]}
+
+# Special redirect for search engine crawlers to get pre-rendered content
+[[redirects]]
+  from = "/*"
+  to = "https://destiny33-renderer.netlify.app/:splat"
+  status = 200
+  force = false
+  conditions = {User-Agent = ["Googlebot*", "bingbot*", "YandexBot*"]}
 
 # HTTP to HTTPS 리다이렉트
 [[redirects]]
@@ -153,6 +178,19 @@
   to = "https://destiny33.site/:splat"
   status = 301
   force = true
+
+# SEO-specific routes for crawlers and snapshots
+[[redirects]]
+  from = "/_seo/*"
+  to = "/.netlify/functions/snapshot-generator/:splat"
+  status = 200
+  force = false
+  conditions = {User-Agent = ["Googlebot*", "bingbot*", "YandexBot*", "Baidu*"]}
+
+[[redirects]]
+  from = "/_render"
+  to = "/.netlify/functions/dynamic-render"
+  status = 200
 
 # API redirects for serverless functions
 [[redirects]]
