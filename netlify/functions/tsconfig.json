@@ -3,14 +3,19 @@
     "target": "es2018",
     "module": "commonjs",
     "outDir": "build",
-    "rootDir": ".",
+    "rootDir": "../../",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+    "baseUrl": "../../",
+    "paths": {
+      "@shared/*": ["shared/*"],
+      "@server/*": ["server/*"]
+    },
     "lib": ["es2018", "dom"]
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "../../shared/**/*.ts", "../../server/**/*.ts"],
   "exclude": ["node_modules", "build"]
 }
