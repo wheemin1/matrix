@@ -22,6 +22,8 @@ export default defineConfig({
     sourcemap: false, // 소스맵 비활성화로 빌드 속도 향상
     minify: 'esbuild', // 더 빠른 minifier 사용
     target: 'es2020', // 모던 브라우저 타겟
+    assetsDir: 'assets',
+    copyPublicDir: true, // public 폴더의 파일을 dist로 복사
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, "client", "index.html"),
