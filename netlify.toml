@@ -148,36 +148,24 @@
     X-Robots-Tag = "all"
     
   # Only apply SPA redirect for browser requests, not search engines
-  conditions = {Cookie = ["!_prerendered=true"]}
+  conditions = {Cookie = ["!_prerendered=true"], User-Agent = ["!Googlebot*", "!bingbot*", "!YandexBot*", "!DuckDuckBot*", "!Baiduspider*", "!facebookexternalhit*", "!Twitterbot*"]}
 
-# Special redirect for search engine crawlers to get pre-rendered content
+# Direct search engine crawlers to the optimized path
 [[redirects]]
   from = "/*"
-  to = "https://destiny33-renderer.netlify.app/:splat"
+  to = "/.netlify/functions/dynamic-render"
   status = 200
   force = false
-  conditions = {User-Agent = ["Googlebot*", "bingbot*", "YandexBot*"]}
+  conditions = {User-Agent = ["Googlebot*", "bingbot*", "YandexBot*", "DuckDuckBot*", "Baiduspider*", "facebookexternalhit*", "Twitterbot*"]}
+  query = {url = ":splat"}
 
-# HTTP to HTTPS 리다이렉트
+# Support for AJAX crawling (_escaped_fragment_)
 [[redirects]]
-  from = "http://destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-# www to non-www 리다이렉트
-[[redirects]]
-  from = "https://www.destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-# Netlify 도메인에서 커스텀 도메인으로 리다이렉트
-[[redirects]]
-  from = "https://destiny33.netlify.app/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
+  from = "/*"
+  to = "/.netlify/functions/snapshot-generator/:splat"
+  status = 200
+  force = false
+  conditions = {Query = ["_escaped_fragment_"]}
 
 # SEO-specific routes for crawlers and snapshots
 [[redirects]]
@@ -185,12 +173,46 @@
   to = "/.netlify/functions/snapshot-generator/:splat"
   status = 200
   force = false
-  conditions = {User-Agent = ["Googlebot*", "bingbot*", "YandexBot*", "Baidu*"]}
+
+# Netlify 도메인에서 커스텀 도메인으로 리다이렉트 (필요한 경우)
+[[redirects]]
+  from = "https://destiny33.netlify.app/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
 
 [[redirects]]
-  from = "/_render"
-  to = "/.netlify/functions/dynamic-render"
-  status = 200
+  from = "http://destiny33.netlify.app/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "destiny33.netlify.app/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
+# HTTP to HTTPS redirections (명시적 HTTP → HTTPS 리다이렉션)
+[[redirects]]
+  from = "http://destiny33.site/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
+# www to non-www redirections (명시적 www → non-www 리다이렉션)
+[[redirects]]
+  from = "https://www.destiny33.site/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
+
+# HTTP www to HTTPS non-www redirections (HTTP www → HTTPS non-www 리다이렉션)
+[[redirects]]
+  from = "http://www.destiny33.site/*"
+  to = "https://destiny33.site/:splat"
+  status = 301
+  force = true
 
 # API redirects for serverless functions
 [[redirects]]

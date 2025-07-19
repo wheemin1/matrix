@@ -67,7 +67,10 @@ const handler: Handler = async (event: HandlerEvent): Promise<HandlerResponse> =
       );
       
       // Add prerendered marker
-      html = html.replace('</head>', '<meta name="_prerendered" content="true" />\n</head>');
+      html = html.replace('</head>', `<meta name="_prerendered" content="true" />
+<link rel="alternate" href="https://destiny33.site${path}" hreflang="x-default" />
+<link rel="alternate" href="https://destiny33.site${path}" hreflang="ko" />
+</head>`);
       
       // Add a note for bots that this is a prerendered version
       html = html.replace('<div id="root"></div>', '<div id="root" data-prerendered="true"></div>');
@@ -77,9 +80,11 @@ const handler: Handler = async (event: HandlerEvent): Promise<HandlerResponse> =
         headers: {
           'X-Prerendered': 'true',
           'Content-Type': 'text/html',
-          'X-Robots-Tag': 'all',
+          'X-Robots-Tag': 'all, index, follow',
           'Cache-Control': 'public, max-age=60, s-maxage=300',
-          'Link': `<https://destiny33.site${path}>; rel="canonical"`
+          'Link': `<https://destiny33.site${path}>; rel="canonical"`,
+          'Vary': 'User-Agent',
+          'X-Canonical-URL': `https://destiny33.site${path}`
         },
         body: html,
       };
@@ -92,8 +97,11 @@ const handler: Handler = async (event: HandlerEvent): Promise<HandlerResponse> =
         headers: {
           'X-Prerendered': 'true',
           'Content-Type': 'text/html',
-          'X-Robots-Tag': 'all',
-          'Cache-Control': 'public, max-age=60, s-maxage=300'
+          'X-Robots-Tag': 'all, index, follow',
+          'Cache-Control': 'public, max-age=60, s-maxage=300',
+          'Link': `<https://destiny33.site${path}>; rel="canonical"`,
+          'Vary': 'User-Agent',
+          'X-Canonical-URL': `https://destiny33.site${path}`
         },
         body: `<!DOCTYPE html>
 <html lang="ko">
