@@ -68,7 +68,6 @@ const handler: Handler = async (event: HandlerEvent): Promise<HandlerResponse> =
       
       // Add prerendered marker
       html = html.replace('</head>', `<meta name="_prerendered" content="true" />
-<link rel="alternate" href="https://destiny33.site${path}" hreflang="x-default" />
 <link rel="alternate" href="https://destiny33.site${path}" hreflang="ko" />
 </head>`);
       

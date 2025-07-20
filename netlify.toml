@@ -193,26 +193,7 @@
   status = 301
   force = true
 
-# HTTP to HTTPS redirections (명시적 HTTP → HTTPS 리다이렉션)
-[[redirects]]
-  from = "http://destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-# www to non-www redirections (명시적 www → non-www 리다이렉션)
-[[redirects]]
-  from = "https://www.destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-# HTTP www to HTTPS non-www redirections (HTTP www → HTTPS non-www 리다이렉션)
-[[redirects]]
-  from = "http://www.destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
+# 명시적 HTTP → HTTPS 리다이렉션 규칙을 제거하고 Netlify의 기본 HTTPS 강제 설정에 의존합니다.
 
 # API redirects for serverless functions
 [[redirects]]
