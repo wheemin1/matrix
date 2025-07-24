@@ -81,6 +81,20 @@ Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
 Content-Type = "image/png"
 
 [[headers]]
+for = "/manifest.json"
+
+[headers.values]
+Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+Content-Type = "application/json"
+
+[[headers]]
+for = "/robots.txt"
+
+[headers.values]
+Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+Content-Type = "text/plain"
+
+[[headers]]
 for = "/*.html"
 
 [headers.values]
@@ -239,33 +253,69 @@ force = false
 [redirects.headers]
 
 [[redirects]]
-from = "http://destiny33.site/*"
-to = "https://destiny33.site/:splat"
-status = 301.0
-force = true
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
-
-[[redirects]]
-from = "https://www.destiny33.site/*"
-to = "https://destiny33.site/:splat"
-status = 301.0
-force = true
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
-
-[[redirects]]
 from = "https://destiny33.netlify.app/*"
 to = "https://destiny33.site/:splat"
 status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "http://destiny33.netlify.app/*"
+to = "https://destiny33.site/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "destiny33.netlify.app/*"
+to = "https://destiny33.site/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/manifest.json"
+to = "/manifest.json"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/site.webmanifest"
+to = "/manifest.json"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/robots.txt"
+to = "/robots.txt"
+status = 200.0
 force = true
 
 [redirects.query]

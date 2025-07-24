@@ -13,7 +13,7 @@ import { useToast } from "../hooks/use-toast";
 import { apiRequest } from "../lib/queryClient";
 import { AppError } from "../lib/error-utils";
 import { endpoints } from "../lib/config";
-import { personalAnalysisSchema, coupleAnalysisSchema, type PersonalAnalysisRequest, type CoupleAnalysisRequest } from "../../../shared/schema";
+import { personalAnalysisSchema, coupleAnalysisSchema, type PersonalAnalysisRequest, type CoupleAnalysisRequest } from "../lib/validation-schemas";
 
 interface InputFormProps {
   mode: 'personal' | 'couple';
