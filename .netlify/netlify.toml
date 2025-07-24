@@ -8,17 +8,14 @@ plugins = []
 publish = "C:\\web\\DestinyMatrixAnalyzer\\dist"
 publishOrigin = "config"
 commandOrigin = "config"
-command = "bash netlify-build-fix.sh && npm run build:client && npm run build:functions"
+command = "npm run build"
 base = "C:\\web\\DestinyMatrixAnalyzer"
-ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)README.md' ':(exclude)*.md' ':(exclude)package-lock.json'"
 functions = "C:\\web\\DestinyMatrixAnalyzer\\netlify\\functions"
 
 [build.environment]
 NODE_VERSION = "20"
-VITE_API_URL = "/.netlify/functions"
+NPM_FLAGS = "--prefer-offline --no-audit"
 NODE_ENV = "production"
-REACT_SKIP_WARNING = "true"
-VITE_BASE_URL = "/"
 
 [build.processing]
 
@@ -80,7 +77,44 @@ Content-Type = "image/svg+xml"
 for = "/og-image.png"
 
 [headers.values]
-Cache-Control = "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400"
+Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+Content-Type = "image/png"
+
+[[headers]]
+for = "/*.html"
+
+[headers.values]
+Content-Type = "text/html; charset=UTF-8"
+Cache-Control = "public, max-age=0, must-revalidate"
+X-Robots-Tag = "all"
+X-Content-Type-Options = "nosniff"
+
+[[headers]]
+for = "/twitter-image.png"
+
+[headers.values]
+Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+Content-Type = "image/png"
+
+[[headers]]
+for = "/kakao-image.png"
+
+[headers.values]
+Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+Content-Type = "image/png"
+
+[[headers]]
+for = "/favicon.ico"
+
+[headers.values]
+Cache-Control = "public, max-age=300"
+Content-Type = "image/x-icon"
+
+[[headers]]
+for = "/icon-*.png"
+
+[headers.values]
+Cache-Control = "public, max-age=300"
 Content-Type = "image/png"
 
 [[headers]]
@@ -151,6 +185,50 @@ force = false
 [[redirects]]
 from = "/*"
 to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+X-Robots-Tag = "all"
+
+[redirects.headers.conditions]
+Cookie = ["!_prerendered=true"]
+User-Agent = ["!Googlebot*", "!bingbot*", "!YandexBot*", "!DuckDuckBot*", "!Baiduspider*", "!facebookexternalhit*", "!Twitterbot*"]
+
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/dynamic-render"
+status = 200.0
+force = false
+
+[redirects.query]
+url = ":splat"
+
+[redirects.conditions]
+User-Agent = ["Googlebot*", "bingbot*", "YandexBot*", "DuckDuckBot*", "Baiduspider*", "facebookexternalhit*", "Twitterbot*"]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/snapshot-generator/:splat"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+Query = ["_escaped_fragment_"]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/_seo/*"
+to = "/.netlify/functions/snapshot-generator/:splat"
 status = 200.0
 force = false
 

@@ -54,7 +54,7 @@
 
   <!-- FAQ 페이지 -->
   <url>
-    <loc>https://destiny33.netlify.app/faq</loc>
+    <loc>https://destiny33.site/faq</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -62,7 +62,7 @@
 
   <!-- 개인정보 처리방침 -->
   <url>
-    <loc>https://destiny33.netlify.app/privacy</loc>
+    <loc>https://destiny33.site/privacy</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
@@ -70,7 +70,7 @@
 
   <!-- 이용약관 -->
   <url>
-    <loc>https://destiny33.netlify.app/terms</loc>
+    <loc>https://destiny33.site/terms</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
@@ -78,23 +78,23 @@
 
   <!-- 블로그 글 예시 (실제 URL에 맞게 수정 필요) -->
   <url>
-    <loc>https://destiny33.netlify.app/blog/mbti-tarot-connection</loc>
+    <loc>https://destiny33.site/blog/mbti-tarot-connection</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>never</changefreq>
     <priority>0.6</priority>
     <image:image>
-      <image:loc>https://destiny33.netlify.app/blog-images/mbti-tarot.jpg</image:loc>
+      <image:loc>https://destiny33.site/blog-images/mbti-tarot.jpg</image:loc>
       <image:title>MBTI와 타로의 연결고리</image:title>
     </image:image>
   </url>
 
   <url>
-    <loc>https://destiny33.netlify.app/blog/destiny-matrix-guide</loc>
+    <loc>https://destiny33.site/blog/destiny-matrix-guide</loc>
     <lastmod>2025-07-02T12:00:00+00:00</lastmod>
     <changefreq>never</changefreq>
     <priority>0.6</priority>
     <image:image>
-      <image:loc>https://destiny33.netlify.app/blog-images/destiny-matrix-guide.jpg</image:loc>
+      <image:loc>https://destiny33.site/blog-images/destiny-matrix-guide.jpg</image:loc>
       <image:title>운명의 매트릭스 가이드</image:title>
     </image:image>
   </url>

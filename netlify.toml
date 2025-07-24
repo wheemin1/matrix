@@ -48,6 +48,18 @@
   [headers.values]
     Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
     Content-Type = "image/png"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+    Content-Type = "application/json"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=300, s-maxage=300, stale-while-revalidate=3600"
+    Content-Type = "text/plain"
     
 # Add specific headers for HTML content that help search engines
 [[headers]]
@@ -191,6 +203,27 @@
   from = "destiny33.netlify.app/*"
   to = "https://destiny33.site/:splat"
   status = 301
+  force = true
+
+# Ensure manifest.json is properly served
+[[redirects]]
+  from = "/manifest.json"
+  to = "/manifest.json"
+  status = 200
+  force = true
+
+# Support for site.webmanifest as an alternative
+[[redirects]]
+  from = "/site.webmanifest"
+  to = "/manifest.json"
+  status = 200
+  force = true
+
+# Ensure robots.txt is properly served
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
   force = true
 
 # 명시적 HTTP → HTTPS 리다이렉션 규칙을 제거하고 Netlify의 기본 HTTPS 강제 설정에 의존합니다.

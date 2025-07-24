@@ -1,3 +1,4 @@
+# 기본 설정 - 모든 검색엔진에게 허용
 User-agent: *
 Allow: /
 Disallow: /admin/
@@ -10,6 +11,23 @@ Sitemap: https://destiny33.site/sitemap.xml
 
 # 크롤링 부하 제어
 Crawl-delay: 10
+
+# 소셜 미디어 봇 (미리보기 생성 등을 위해 필요)
+User-agent: LinkedInBot
+Allow: /
+Crawl-delay: 5
+
+User-agent: Twitterbot
+Allow: /
+Crawl-delay: 5
+
+User-agent: facebookexternalhit
+Allow: /
+Crawl-delay: 5
+
+User-agent: WhatsApp
+Allow: /
+Crawl-delay: 5
 
 # Bingbot 특정 규칙
 User-agent: Bingbot
@@ -37,8 +55,3 @@ Disallow: /private/images/
 User-agent: Googlebot-Mobile
 Allow: /
 Crawl-delay: 5
-
-# 네이버 검색 로봇
-User-agent: Yeti
-Allow: /
-Crawl-delay: 10

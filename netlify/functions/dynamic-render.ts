@@ -7,11 +7,21 @@ const handler: Handler = async (event: HandlerEvent): Promise<HandlerResponse> =
   const url = event.queryStringParameters?.url || '/';
   const path = url.startsWith('/') ? url : `/${url}`;
   const fullUrl = `https://destiny33.site${path}`;
-  const isBot = /bot|googlebot|crawler|spider|yandex|bingbot/i.test(userAgent);
+  // Expanded bot detection to include more search engines and social media bots
+  const isBot = /bot|googlebot|crawler|spider|yandex|bingbot|twitterbot|linkedinbot|facebookexternalhit|whatsapp|slackbot|discordbot|telegrambot/i.test(userAgent);
 
   // If it's a search engine crawler, provide optimized HTML content
   if (isBot) {
     try {
+      // Log bot detection for monitoring
+      console.log(`Bot detected: ${userAgent} requesting ${fullUrl}`);
+      
+      // Determine the bot type for specialized handling
+      const isSocialBot = /facebookexternalhit|linkedinbot|twitterbot|whatsapp|slackbot|discordbot|telegrambot/i.test(userAgent);
+      const isSearchBot = /googlebot|bingbot|yandex|baidu|yeti|naverbot/i.test(userAgent);
+      
+      console.log(`Bot type: ${isSocialBot ? 'Social Media Bot' : isSearchBot ? 'Search Engine Bot' : 'Other Bot'}`);
+      
       // Fetch the index.html as a base template
       const response = await fetch('https://destiny33.site/', {
         headers: {
@@ -110,6 +120,16 @@ const handler: Handler = async (event: HandlerEvent): Promise<HandlerResponse> =
   <title>운명의 매트릭스 (Destiny Matrix)</title>
   <link rel="canonical" href="https://destiny33.site${path}" />
   <meta name="description" content="운명의 매트릭스 분석 서비스. 타로, MBTI, 사주를 결합한 운명 분석 서비스." />
+  <meta property="og:title" content="운명의 매트릭스 (Destiny Matrix)" />
+  <meta property="og:description" content="운명의 매트릭스 분석 서비스. 타로, MBTI, 사주를 결합한 운명 분석 서비스." />
+  <meta property="og:url" content="https://destiny33.site${path}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://destiny33.site/og-image.png" />
+  <meta property="og:site_name" content="운명의 매트릭스" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="운명의 매트릭스 (Destiny Matrix)" />
+  <meta name="twitter:description" content="운명의 매트릭스 분석 서비스. 타로, MBTI, 사주를 결합한 운명 분석 서비스." />
+  <meta name="twitter:image" content="https://destiny33.site/twitter-image.png" />
 </head>
 <body>
   <h1>운명의 매트릭스</h1>
