@@ -7,7 +7,20 @@ const personalAnalysisSchema = z.object({
   personalName: z.string()
     .min(1, "이름을 입력해주세요")
     .max(30, "이름이 너무 깁니다")
-    .regex(/^[가-힣a-zA-Z\s]+$/, "이름은 한글, 영문, 공백만 포함할 수 있습니다"),
+    .regex(/^[  } catch (error) {
+    console.error('Error processing analyze request:', error);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ 
+        error: '분석 처리 중 오류가 발생했습니다.',
+        details: error instanceof Error ? {
+          message: error.message,
+          stack: process.env.NODE_ENV !== 'production' ? error.stack : undefined
+        } : 'Unknown error'
+      })
+    };
+  }Z\s]+$/, "이름은 한글, 영문, 공백만 포함할 수 있습니다"),
   personalBirthdate: z.string()
     .min(1, "생년월일을 입력해주세요")
     .refine(
@@ -158,13 +171,16 @@ export const handler: Handler = async (event, context) => {
     let body;
     try {
       body = JSON.parse(event.body || '{}');
-      console.log('Request body parsed:', JSON.stringify(body));
+      console.log('Request body parsed:', JSON.stringify(body, null, 2));
     } catch (error) {
       console.error('Error parsing request body:', error);
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: '잘못된 요청 데이터 형식입니다.' })
+        body: JSON.stringify({ 
+          error: '잘못된 요청 데이터 형식입니다.', 
+          details: error instanceof Error ? error.message : 'Unknown parsing error' 
+        })
       };
     }
     
@@ -173,10 +189,14 @@ export const handler: Handler = async (event, context) => {
     if (mode === "personal") {
       const validation = personalAnalysisSchema.safeParse(body);
       if (!validation.success) {
+        console.error('Validation error:', JSON.stringify(validation.error.errors, null, 2));
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: validation.error.errors })
+          body: JSON.stringify({ 
+            error: '입력 데이터 검증에 실패했습니다.', 
+            details: validation.error.errors 
+          })
         };
       }
       
@@ -218,10 +238,14 @@ export const handler: Handler = async (event, context) => {
     } else if (mode === "couple") {
       const validation = coupleAnalysisSchema.safeParse(body);
       if (!validation.success) {
+        console.error('Validation error for couple mode:', JSON.stringify(validation.error.errors, null, 2));
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: validation.error.errors })
+          body: JSON.stringify({ 
+            error: '입력 데이터 검증에 실패했습니다.', 
+            details: validation.error.errors 
+          })
         };
       }
       
@@ -277,7 +301,10 @@ export const handler: Handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: "분석 중 오류가 발생했습니다." })
+      body: JSON.stringify({ 
+        error: "분석 중 오류가 발생했습니다.",
+        details: error instanceof Error ? error.message : String(error)
+      })
     };
   }
 };
