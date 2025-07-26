@@ -1,7 +1,128 @@
 import type { Handler } from '@netlify/functions';
-import { personalAnalysisSchema, coupleAnalysisSchema } from "../../client/src/lib/validation-schemas";
-import { calculateDestinyMatrix } from "../../client/src/lib/destiny-matrix";
-import { storage } from '../../server/storage';
+import { z } from 'zod';
+
+// Standalone schema definition
+const personalAnalysisSchema = z.object({
+  mode: z.literal("personal"),
+  personalName: z.string()
+    .min(1, "이름을 입력해주세요")
+    .max(30, "이름이 너무 깁니다")
+    .regex(/^[가-힣a-zA-Z\s]+$/, "이름은 한글, 영문, 공백만 포함할 수 있습니다"),
+  personalBirthdate: z.string()
+    .min(1, "생년월일을 입력해주세요")
+    .refine(
+      (date) => {
+        const birthDate = new Date(date);
+        const now = new Date();
+        return !isNaN(birthDate.getTime()) && 
+               birthDate <= now && 
+               birthDate.getFullYear() >= 1900;
+      },
+      { message: "유효한 생년월일을 입력해주세요 (1900년 이후)" }
+    ),
+  personalGender: z.enum(["male", "female"], { required_error: "성별을 선택해주세요" }),
+});
+
+const coupleAnalysisSchema = z.object({
+  mode: z.literal("couple"),
+  person1Name: z.string()
+    .min(1, "첫 번째 사람의 이름을 입력해주세요")
+    .max(30, "이름이 너무 깁니다")
+    .regex(/^[가-힣a-zA-Z\s]+$/, "이름은 한글, 영문, 공백만 포함할 수 있습니다"),
+  person1Birthdate: z.string()
+    .min(1, "첫 번째 사람의 생년월일을 입력해주세요")
+    .refine(
+      (date) => {
+        const birthDate = new Date(date);
+        const now = new Date();
+        return !isNaN(birthDate.getTime()) && 
+               birthDate <= now && 
+               birthDate.getFullYear() >= 1900;
+      },
+      { message: "유효한 생년월일을 입력해주세요 (1900년 이후)" }
+    ),
+  person1Gender: z.enum(["male", "female"], { required_error: "첫 번째 사람의 성별을 선택해주세요" }),
+  person2Name: z.string()
+    .min(1, "두 번째 사람의 이름을 입력해주세요")
+    .max(30, "이름이 너무 깁니다")
+    .regex(/^[가-힣a-zA-Z\s]+$/, "이름은 한글, 영문, 공백만 포함할 수 있습니다"),
+  person2Birthdate: z.string()
+    .min(1, "두 번째 사람의 생년월일을 입력해주세요")
+    .refine(
+      (date) => {
+        const birthDate = new Date(date);
+        const now = new Date();
+        return !isNaN(birthDate.getTime()) && 
+               birthDate <= now && 
+               birthDate.getFullYear() >= 1900;
+      },
+      { message: "유효한 생년월일을 입력해주세요 (1900년 이후)" }
+    ),
+  person2Gender: z.enum(["male", "female"], { required_error: "두 번째 사람의 성별을 선택해주세요" }),
+});
+
+// Standalone destiny matrix calculation function
+function calculateDestinyMatrix(birthdate: string, gender?: string) {
+  const date = new Date(birthdate);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  
+  // Convert to single digits or major arcana numbers (1-22)
+  const reduceToTarot = (num: number): number => {
+    while (num > 22) {
+      num = num.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+    }
+    return num === 0 ? 22 : num;
+  };
+
+  // Core energy calculation (center point)
+  const coreEnergy = reduceToTarot(day + month + year);
+  
+  // Spiritual purpose (top point)
+  const spiritualPurpose = reduceToTarot(day + month);
+  
+  // Behavior pattern (left point)
+  const behavior = reduceToTarot(day);
+  
+  // Talent (right point)
+  const talent = reduceToTarot(month + year);
+  
+  // Karma (bottom point)
+  const karma = reduceToTarot(year);
+  
+  // Additional inner points
+  const additional1 = reduceToTarot(coreEnergy + spiritualPurpose);
+  const additional2 = reduceToTarot(coreEnergy + talent);
+  const additional3 = reduceToTarot(coreEnergy + karma);
+  const additional4 = reduceToTarot(coreEnergy + behavior);
+  
+  // Outer ring points
+  const outer1 = reduceToTarot(spiritualPurpose + behavior);
+  const outer2 = reduceToTarot(spiritualPurpose + talent);
+  const outer3 = reduceToTarot(talent + karma);
+  const outer4 = reduceToTarot(karma + behavior);
+
+  return {
+    coreEnergy,
+    spiritualPurpose,
+    behavior,
+    talent,
+    karma,
+    additional1,
+    additional2,
+    additional3,
+    additional4,
+    outer1,
+    outer2,
+    outer3,
+    outer4,
+  };
+}
+
+// A map-based storage that persists for the duration of the function container lifetime
+let analysesMap = new Map();
+let currentId = 1;
 
 export const handler: Handler = async (event, context) => {
   // CORS 헤더 설정
@@ -47,7 +168,10 @@ export const handler: Handler = async (event, context) => {
       const { personalName, personalBirthdate, personalGender } = validation.data;
       const matrixPoints = calculateDestinyMatrix(personalBirthdate, personalGender);
       
-      const analysis = await storage.createMatrixAnalysis({
+      // Create analysis record
+      const id = currentId++;
+      const analysis = {
+        id,
         mode: "personal",
         personalName,
         personalBirthdate,
@@ -59,13 +183,16 @@ export const handler: Handler = async (event, context) => {
         person2Birthdate: null,
         person2Gender: null,
         matrixPoints: JSON.stringify(matrixPoints),
-      });
+        createdAt: new Date()
+      };
+      
+      analysesMap.set(id, analysis);
       
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({ 
-          id: analysis.id, 
+          id, 
           matrixPoints,
           name: personalName,
           birthdate: personalBirthdate,
@@ -92,7 +219,10 @@ export const handler: Handler = async (event, context) => {
         person2: person2Matrix,
       };
       
-      const analysis = await storage.createMatrixAnalysis({
+      // Create analysis record
+      const id = currentId++;
+      const analysis = {
+        id,
         mode: "couple",
         personalName: null,
         personalBirthdate: null,
@@ -104,13 +234,16 @@ export const handler: Handler = async (event, context) => {
         person2Birthdate,
         person2Gender,
         matrixPoints: JSON.stringify(matrixPoints),
-      });
+        createdAt: new Date()
+      };
+      
+      analysesMap.set(id, analysis);
       
       return {
         statusCode: 200,
         headers,
         body: JSON.stringify({ 
-          id: analysis.id, 
+          id, 
           matrixPoints,
           person1: { name: person1Name, birthdate: person1Birthdate },
           person2: { name: person2Name, birthdate: person2Birthdate },
