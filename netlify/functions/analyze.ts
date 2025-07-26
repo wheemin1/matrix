@@ -167,6 +167,20 @@ export const handler: Handler = async (event, context) => {
       body: ''
     };
   }
+  
+  // GET 요청으로 함수 상태 확인 (디버깅용)
+  if (event.httpMethod === 'GET') {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        status: 'OK',
+        message: 'Destiny Matrix Analysis API is working',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0'
+      })
+    };
+  }
 
   try {
     if (event.httpMethod !== 'POST') {
