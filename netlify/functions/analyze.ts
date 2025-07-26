@@ -141,6 +141,16 @@ export const handler: Handler = async (event, context) => {
   // 디버깅을 위한 로그 추가
   console.log(`Request received: Method=${event.httpMethod}, Path=${event.path}, Headers=${JSON.stringify(event.headers)}`);
   
+  // 요청 내용 전체 로깅 (문제 해결용)
+  console.log('Full request event:', JSON.stringify({
+    httpMethod: event.httpMethod,
+    path: event.path,
+    headers: event.headers,
+    queryStringParameters: event.queryStringParameters,
+    body: event.body ? '(body exists)' : '(no body)',
+    isBase64Encoded: event.isBase64Encoded,
+  }, null, 2));
+  
   // CORS 헤더 설정
   const headers = {
     'Access-Control-Allow-Origin': '*',

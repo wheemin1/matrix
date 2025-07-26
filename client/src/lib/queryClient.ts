@@ -31,12 +31,20 @@ export async function apiRequest(
   maxRetries = 3
 ): Promise<Response> {
   try {
-    const res = await fetch(url, {
+    console.log(`Sending ${method} request to ${url}`, data);
+    
+    const options: RequestInit = {
       method,
-      headers: data ? { "Content-Type": "application/json" } : {},
+      headers: {
+        ...data ? { "Content-Type": "application/json" } : {},
+        "Accept": "application/json"
+      },
       body: data ? JSON.stringify(data) : undefined,
       credentials: "include",
-    });
+      mode: "cors"
+    };
+    
+    const res = await fetch(url, options);
 
     await throwIfResNotOk(res);
     return res;
