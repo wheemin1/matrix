@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions';
-import { personalAnalysisSchema, coupleAnalysisSchema } from "../../shared/schema";
+import { personalAnalysisSchema, coupleAnalysisSchema } from "../../client/src/lib/validation-schemas";
 import { calculateDestinyMatrix } from "../../client/src/lib/destiny-matrix";
 import { storage } from '../../server/storage';
 
