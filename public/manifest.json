@@ -11,13 +11,13 @@
   "keywords": ["운명의 매트릭스", "운명의 매트릭스 검사", "데스티니 매트릭스", "매트릭스 오브 데스티니", "운명 분석", "타로 분석"],
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
