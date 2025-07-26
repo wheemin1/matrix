@@ -155,7 +155,19 @@ export const handler: Handler = async (event, context) => {
     }
 
     // 요청 바디 파싱
-    const body = JSON.parse(event.body || '{}');
+    let body;
+    try {
+      body = JSON.parse(event.body || '{}');
+      console.log('Request body parsed:', JSON.stringify(body));
+    } catch (error) {
+      console.error('Error parsing request body:', error);
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: '잘못된 요청 데이터 형식입니다.' })
+      };
+    }
+    
     const { mode } = body;
     
     if (mode === "personal") {
