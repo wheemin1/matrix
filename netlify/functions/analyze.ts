@@ -35,13 +35,29 @@ export const handler: Handler = async (event, context) => {
   try {
     console.log('Processing request...');
     
-    // 극도로 단순화된 응답 - 어떤 처리도 하지 않고 바로 성공 응답
+    // HTTP 메소드 확인 - POST가 아니더라도 일단 처리 (디버깅 목적)
+    console.log(`Handling ${event.httpMethod} request`);
+    
+    // 요청 바디 파싱 시도
+    let requestData = {};
+    if (event.body) {
+      try {
+        requestData = JSON.parse(event.body);
+        console.log('Successfully parsed request body:', requestData);
+      } catch (parseError) {
+        console.error('Failed to parse request body:', parseError);
+      }
+    }
+    
+    // 단순 응답 반환
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
         message: 'Static test response',
+        requestMethod: event.httpMethod,
+        receivedData: requestData,
         timestamp: new Date().toISOString(),
         matrixPoints: {
           coreEnergy: 1,
