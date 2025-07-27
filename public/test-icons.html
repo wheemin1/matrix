@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이콘 테스트</title>
+</head>
+<body>
+  <h1>아이콘 테스트 페이지</h1>
+  
+  <h2>192x192 아이콘 테스트</h2>
+  <img src="icon-192.png" alt="192x192 아이콘">
+  
+  <h2>512x512 아이콘 테스트</h2>
+  <img src="icon-512.png" alt="512x512 아이콘">
+  
+  <h2>API 테스트</h2>
+  <button id="testApi">API 테스트</button>
+  <button id="testFunction">서버리스 함수 테스트</button>
+  <pre id="result">여기에 결과가 표시됩니다.</pre>
+  
+  <script>
+    // API 테스트 함수
+    document.getElementById('testApi').addEventListener('click', async () => {
+      const resultElement = document.getElementById('result');
+      resultElement.textContent = '요청 중...';
+      
+      try {
+        const response = await fetch('/.netlify/functions/analyze', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            mode: 'personal',
+            personalName: '테스트',
+            personalBirthdate: '2000-01-01',
+            personalGender: 'male'
+          })
+        });
+        
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `오류 발생: ${error.message}`;
+      }
+    });
+    
+    // 서버리스 함수 테스트
+    document.getElementById('testFunction').addEventListener('click', async () => {
+      const resultElement = document.getElementById('result');
+      resultElement.textContent = '요청 중...';
+      
+      try {
+        const response = await fetch('/.netlify/functions/test');
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `오류 발생: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

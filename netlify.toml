@@ -7,6 +7,10 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--prefer-offline --no-audit"
   NODE_ENV = "production"
+  
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 # CSS 파일 MIME 타입 설정
 [[headers]]
@@ -24,7 +28,8 @@
 [[headers]]
   for = "*.png"
   [headers.values]
-    Cache-Control = "public, max-age=2592000" # 30일
+    Cache-Control = "public, max-age=3600" # 1시간 (디버깅 중)
+    Content-Type = "image/png"
 
 [[headers]]
   for = "*.jpg"
