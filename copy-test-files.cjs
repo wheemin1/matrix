@@ -7,6 +7,10 @@ const filesToCopy = [
   {
     src: './public/test-icons.html',
     dest: './dist/test-icons.html'
+  },
+  {
+    src: './public/matrix-bg.svg',
+    dest: './dist/matrix-bg.svg'
   }
 ];
 

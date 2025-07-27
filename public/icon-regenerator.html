@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이콘 재생성 도구</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #6366F1;
+            padding-bottom: 10px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            display: block;
+        }
+        button {
+            background-color: #6366F1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #4F46E5;
+        }
+        .controls {
+            margin-bottom: 15px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        a {
+            color: #6366F1;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>PWA 아이콘 생성 도구</h1>
+    
+    <div class="container">
+        <h2>1. 아이콘 생성</h2>
+        <div class="controls">
+            <button id="generateIcon192">192x192 아이콘 생성</button>
+            <button id="generateIcon512">512x512 아이콘 생성</button>
+        </div>
+        
+        <div>
+            <h3>192x192 아이콘</h3>
+            <canvas id="canvas192" width="192" height="192"></canvas>
+            <button id="downloadPng192">PNG 다운로드</button>
+            <button id="downloadSvg192">SVG 다운로드</button>
+        </div>
+        
+        <div class="result">
+            <h3>512x512 아이콘</h3>
+            <canvas id="canvas512" width="512" height="512"></canvas>
+            <button id="downloadPng512">PNG 다운로드</button>
+            <button id="downloadSvg512">SVG 다운로드</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>2. 웹사이트에서 확인</h2>
+        <p>생성된 아이콘을 public 폴더에 다음 이름으로 저장하세요:</p>
+        <ul>
+            <li><code>icon-192.png</code> - 192x192 PNG 아이콘</li>
+            <li><code>icon-512.png</code> - 512x512 PNG 아이콘</li>
+            <li><code>icon-192.svg</code> - 192x192 SVG 아이콘</li>
+            <li><code>icon-512.svg</code> - 512x512 SVG 아이콘</li>
+        </ul>
+        <p>그런 다음 다시 빌드하세요:</p>
+        <code>npm run build</code>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas192 = document.getElementById('canvas192');
+            const canvas512 = document.getElementById('canvas512');
+            const ctx192 = canvas192.getContext('2d');
+            const ctx512 = canvas512.getContext('2d');
+            
+            // 192x192 아이콘 생성
+            document.getElementById('generateIcon192').addEventListener('click', function() {
+                generateIcon(ctx192, 192);
+            });
+            
+            // 512x512 아이콘 생성
+            document.getElementById('generateIcon512').addEventListener('click', function() {
+                generateIcon(ctx512, 512);
+            });
+            
+            // 192x192 PNG 다운로드
+            document.getElementById('downloadPng192').addEventListener('click', function() {
+                downloadPNG(canvas192, 'icon-192.png');
+            });
+            
+            // 512x512 PNG 다운로드
+            document.getElementById('downloadPng512').addEventListener('click', function() {
+                downloadPNG(canvas512, 'icon-512.png');
+            });
+            
+            // 192x192 SVG 다운로드
+            document.getElementById('downloadSvg192').addEventListener('click', function() {
+                downloadSVG(192, 'icon-192.svg');
+            });
+            
+            // 512x512 SVG 다운로드
+            document.getElementById('downloadSvg512').addEventListener('click', function() {
+                downloadSVG(512, 'icon-512.svg');
+            });
+            
+            // 초기 아이콘 생성
+            generateIcon(ctx192, 192);
+            generateIcon(ctx512, 512);
+            
+            // 아이콘 생성 함수
+            function generateIcon(ctx, size) {
+                // 배경 지우기
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, size, size);
+                
+                // 배경색 그라데이션
+                const gradient = ctx.createLinearGradient(0, 0, size, size);
+                gradient.addColorStop(0, '#6366F1');  // 인디고
+                gradient.addColorStop(1, '#2A1A5E');  // 깊은 퍼플
+                
+                // 원형 배경
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2.2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 매트릭스 중심점
+                const centerX = size/2;
+                const centerY = size/2;
+                const radius = size/3.5;
+                
+                // 중심점 (코어)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, size/15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 매트릭스 포인트 위치 계산
+                const points = [
+                    { x: centerX, y: centerY - radius }, // 상단
+                    { x: centerX - radius * 0.866, y: centerY + radius * 0.5 }, // 좌하단
+                    { x: centerX + radius * 0.866, y: centerY + radius * 0.5 }, // 우하단
+                ];
+                
+                // 매트릭스 라인
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = size/40;
+                
+                // 중심에서 각 포인트로 라인 그리기
+                for (const point of points) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(point.x, point.y);
+                    ctx.stroke();
+                }
+                
+                // 외부 삼각형 라인 그리기
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                ctx.lineTo(points[1].x, points[1].y);
+                ctx.lineTo(points[2].x, points[2].y);
+                ctx.closePath();
+                ctx.stroke();
+                
+                // 매트릭스 포인트 그리기
+                for (const point of points) {
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size/20, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // PNG 다운로드 함수
+            function downloadPNG(canvas, filename) {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+            
+            // SVG 다운로드 함수
+            function downloadSVG(size, filename) {
+                const radius = size/3.5;
+                const centerX = size/2;
+                const centerY = size/2;
+                
+                // 매트릭스 포인트 위치 계산
+                const points = [
+                    { x: centerX, y: centerY - radius }, // 상단
+                    { x: centerX - radius * 0.866, y: centerY + radius * 0.5 }, // 좌하단
+                    { x: centerX + radius * 0.866, y: centerY + radius * 0.5 }, // 우하단
+                ];
+                
+                const svgContent = `
+                <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6366F1" />
+                            <stop offset="100%" stop-color="#2A1A5E" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="${size/2}" cy="${size/2}" r="${size/2.2}" fill="url(#bg)" />
+                    
+                    <!-- 중심점 -->
+                    <circle cx="${centerX}" cy="${centerY}" r="${size/15}" fill="#FFFFFF" />
+                    
+                    <!-- 매트릭스 라인 -->
+                    <line x1="${centerX}" y1="${centerY}" x2="${points[0].x}" y2="${points[0].y}" stroke="#FFFFFF" stroke-width="${size/40}" />
+                    <line x1="${centerX}" y1="${centerY}" x2="${points[1].x}" y2="${points[1].y}" stroke="#FFFFFF" stroke-width="${size/40}" />
+                    <line x1="${centerX}" y1="${centerY}" x2="${points[2].x}" y2="${points[2].y}" stroke="#FFFFFF" stroke-width="${size/40}" />
+                    
+                    <!-- 외부 삼각형 -->
+                    <polyline points="${points[0].x},${points[0].y} ${points[1].x},${points[1].y} ${points[2].x},${points[2].y} ${points[0].x},${points[0].y}" 
+                              stroke="#FFFFFF" stroke-width="${size/40}" fill="none" />
+                    
+                    <!-- 매트릭스 포인트 -->
+                    <circle cx="${points[0].x}" cy="${points[0].y}" r="${size/20}" fill="#FFFFFF" />
+                    <circle cx="${points[1].x}" cy="${points[1].y}" r="${size/20}" fill="#FFFFFF" />
+                    <circle cx="${points[2].x}" cy="${points[2].y}" r="${size/20}" fill="#FFFFFF" />
+                </svg>
+                `;
+                
+                const blob = new Blob([svgContent], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+        });
+    </script>
+</body>
+</html>
