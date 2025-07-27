@@ -240,9 +240,5 @@
   status = 200
 
 # Serverless functions configuration
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-  
 [functions."*"]
   node_bundler = "esbuild"
