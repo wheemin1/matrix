@@ -1,32 +1,20 @@
 {
   "name": "운명의 매트릭스 (Destiny Matrix)",
-  "short_name": "운명의 매트릭스",
-  "description": "운명의 매트릭스 분석 서비스. MBTI, 타로, 사주를 결합한 운명 분석 서비스",
+  "short_name": "Destiny Matrix",
+  "description": "MBTI, 타로, 사주를 결합한 운명 분석 서비스",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#2A1A5E",
   "theme_color": "#2A1A5E",
   "orientation": "portrait",
-  "categories": ["lifestyle", "entertainment", "personalization"],
-  "keywords": ["운명의 매트릭스", "운명의 매트릭스 검사", "데스티니 매트릭스", "매트릭스 오브 데스티니", "운명 분석", "타로 분석"],
   "icons": [
     {
-      "src": "icon-192.svg",
-      "sizes": "192x192",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "icon-512.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "icon-192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

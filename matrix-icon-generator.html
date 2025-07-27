@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    canvas {
+      margin: 20px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #2A1A5E;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>매트릭스 아이콘 생성기</h1>
+  
+  <div>
+    <canvas id="canvas192" width="192" height="192"></canvas>
+    <canvas id="canvas512" width="512" height="512"></canvas>
+  </div>
+  
+  <div>
+    <button id="download192">192x192 PNG 다운로드</button>
+    <button id="download512">512x512 PNG 다운로드</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const canvas192 = document.getElementById('canvas192');
+      const canvas512 = document.getElementById('canvas512');
+      const ctx192 = canvas192.getContext('2d');
+      const ctx512 = canvas512.getContext('2d');
+      
+      // 아이콘 그리기 함수
+      function drawIcon(ctx, size) {
+        const background = '#2A1A5E'; // 보라색 테마
+        const highlight = '#FFD700';  // 금색 강조
+        
+        // 배경
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, size, size);
+        
+        // 바깥 원
+        const centerX = size / 2;
+        const centerY = size / 2;
+        const radius = size * 0.4;
+        
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = highlight;
+        ctx.lineWidth = size * 0.03;
+        ctx.stroke();
+        
+        // 십자 패턴
+        const crossSize = radius * 0.7;
+        ctx.strokeStyle = highlight;
+        ctx.lineWidth = size * 0.02;
+        
+        // 수직선
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - crossSize);
+        ctx.lineTo(centerX, centerY + crossSize);
+        ctx.stroke();
+        
+        // 수평선
+        ctx.beginPath();
+        ctx.moveTo(centerX - crossSize, centerY);
+        ctx.lineTo(centerX + crossSize, centerY);
+        ctx.stroke();
+        
+        // 대각선 1
+        ctx.beginPath();
+        ctx.moveTo(centerX - crossSize * 0.7, centerY - crossSize * 0.7);
+        ctx.lineTo(centerX + crossSize * 0.7, centerY + crossSize * 0.7);
+        ctx.stroke();
+        
+        // 대각선 2
+        ctx.beginPath();
+        ctx.moveTo(centerX + crossSize * 0.7, centerY - crossSize * 0.7);
+        ctx.lineTo(centerX - crossSize * 0.7, centerY + crossSize * 0.7);
+        ctx.stroke();
+        
+        // 중앙 원
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius * 0.3, 0, 2 * Math.PI);
+        ctx.fillStyle = highlight;
+        ctx.fill();
+      }
+      
+      // 아이콘 그리기
+      drawIcon(ctx192, 192);
+      drawIcon(ctx512, 512);
+      
+      // 다운로드 이벤트
+      document.getElementById('download192').addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.download = 'icon-192.png';
+        link.href = canvas192.toDataURL('image/png');
+        link.click();
+      });
+      
+      document.getElementById('download512').addEventListener('click', function() {
+        const link = document.createElement('a');
+        link.download = 'icon-512.png';
+        link.href = canvas512.toDataURL('image/png');
+        link.click();
+      });
+    });
+  </script>
+</body>
+</html>

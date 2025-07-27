@@ -1,8 +1,19 @@
 // @ts-check
 import { Handler } from '@netlify/functions';
 
-// 매우 간단한 핸들러
-export const handler: Handler = async (event) => {
+// 초간단 핸들러 - 단순히 정적 데이터만 반환
+export const handler: Handler = async (event, context) => {
+  // 상세 로깅
+  console.log('==== DEBUG INFO START ====');
+  console.log(`Request Method: ${event.httpMethod}`);
+  console.log(`Request Path: ${event.path}`);
+  console.log(`Request Headers: ${JSON.stringify(event.headers, null, 2)}`);
+  console.log(`Request Body: ${event.body}`);
+  console.log(`Node Environment: ${process.env.NODE_ENV}`);
+  console.log(`Function Name: ${context?.functionName || 'unknown'}`);
+  console.log(`Netlify Context: ${process.env.CONTEXT || 'unknown'}`);
+  console.log('==== DEBUG INFO END ====');
+
   // CORS 헤더 설정
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -13,6 +24,7 @@ export const handler: Handler = async (event) => {
 
   // OPTIONS 요청 처리 (CORS preflight)
   if (event.httpMethod === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return {
       statusCode: 204,
       headers,
@@ -20,66 +32,42 @@ export const handler: Handler = async (event) => {
     };
   }
 
-  // 로깅
-  console.log(`Request received: Method=${event.httpMethod}, Path=${event.path}`);
-  console.log(`Headers: ${JSON.stringify(event.headers)}`);
-  console.log(`Body: ${event.body}`);
-
   try {
-    if (event.httpMethod !== 'POST') {
-      return {
-        statusCode: 405,
-        headers,
-        body: JSON.stringify({ error: '잘못된 HTTP 메소드입니다.' })
-      };
-    }
-
-    // 요청 바디 파싱
-    const body = JSON.parse(event.body || '{}');
-    const { mode, personalName, personalBirthdate, personalGender } = body;
-
-    // 간단한 매트릭스 포인트 계산
-    const date = new Date(personalBirthdate);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    // 응답 생성
+    console.log('Processing request...');
+    
+    // 극도로 단순화된 응답 - 어떤 처리도 하지 않고 바로 성공 응답
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        id: 1,
-        mode: mode || 'personal',
-        name: personalName || 'User',
-        birthdate: personalBirthdate || '2000-01-01',
+        message: 'Static test response',
+        timestamp: new Date().toISOString(),
         matrixPoints: {
           coreEnergy: 1,
           spiritualPurpose: 2,
           behavior: 3,
-          talent: 4, 
-          karma: 5,
-          additional1: 6,
-          additional2: 7,
-          additional3: 8,
-          additional4: 9,
-          outer1: 10,
-          outer2: 11,
-          outer3: 12,
-          outer4: 13
+          talent: 4,
+          karma: 5
         }
       })
     };
-  } catch (error) {
-    console.error('Error in analyze function:', error);
+  } catch (error: any) {
+    // 상세한 오류 정보 로깅
+    console.error('==== ERROR DETAILS ====');
+    console.error(`Error Type: ${error?.constructor?.name || 'Unknown'}`);
+    console.error(`Error Message: ${error?.message || 'No error message'}`);
+    console.error(`Error Stack: ${error?.stack || 'No stack trace'}`);
+    console.error('==== ERROR DETAILS END ====');
+    
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({ 
         error: '분석 중 오류가 발생했습니다.', 
         message: error instanceof Error ? error.message : 'Unknown error',
-        stack: process.env.NODE_ENV !== 'production' ? (error instanceof Error ? error.stack : null) : null
+        stack: process.env.NODE_ENV !== 'production' ? (error instanceof Error ? error.stack : null) : null,
+        timestamp: new Date().toISOString()
       })
     };
   }
