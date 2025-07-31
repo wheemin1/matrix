@@ -1,10 +1,2 @@
-# Force HTTPS for all requests
-http://destiny33.site/* https://destiny33.site/:splat 301!
-http://www.destiny33.site/* https://destiny33.site/:splat 301!
-
-# Redirect Netlify subdomain to custom domain
-https://destiny33.netlify.app/* https://destiny33.site/:splat 301!
-http://destiny33.netlify.app/* https://destiny33.site/:splat 301!
-
-# SPA routing
+# SPA routing only
 /* /index.html 200

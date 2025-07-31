@@ -153,60 +153,7 @@
   to = "/src/styles/:splat"
   status = 200
 
-# 강제 HTTPS 리디렉션 - 모든 HTTP 요청을 HTTPS로 리디렉션
-[[redirects]]
-  from = "http://destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.destiny33.site/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-# Netlify 도메인에서 커스텀 도메인으로 리다이렉트
-[[redirects]]
-  from = "https://destiny33.netlify.app/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://destiny33.netlify.app/*"
-  to = "https://destiny33.site/:splat"
-  status = 301
-  force = true
-
-# API redirects for serverless functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-# Ensure manifest.json is properly served
-[[redirects]]
-  from = "/manifest.json"
-  to = "/manifest.json"
-  status = 200
-  force = true
-
-# Support for site.webmanifest as an alternative
-[[redirects]]
-  from = "/site.webmanifest"
-  to = "/manifest.json"
-  status = 200
-  force = true
-
-# Ensure robots.txt is properly served
-[[redirects]]
-  from = "/robots.txt"
-  to = "/robots.txt"
-  status = 200
-  force = true
-
-# Client-side routing redirects with pre-rendering for SEO
+# Client-side routing redirects - 단순화
 [[redirects]]
   from = "/*"
   to = "/index.html"
