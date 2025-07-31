@@ -1,4 +1,4 @@
-# 기본 설정 - 모든 검색엔진에게 허용
+# 기본 설정 - 모든 검색엔진에게 허용 (HTTPS 전용)
 User-agent: *
 Allow: /
 Disallow: /admin/
@@ -6,7 +6,10 @@ Disallow: /private/
 Disallow: /api/
 Disallow: /draft/
 
-# 사이트맵 파일 위치
+# HTTP 접근 차단 - HTTPS만 허용
+# 모든 HTTP 요청은 자동으로 HTTPS로 리디렉션됩니다
+
+# 사이트맵 파일 위치 (HTTPS 전용)
 Sitemap: https://destiny33.site/sitemap.xml
 
 # 크롤링 부하 제어
