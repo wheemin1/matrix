@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로고 생성기</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        canvas {
+            display: none;
+        }
+        .message {
+            margin: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            font-size: 16px;
+            max-width: 600px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>로고 생성 중...</h1>
+    <div class="message">로고 파일을 생성하고 있습니다. 잠시만 기다려주세요.</div>
+    
+    <canvas id="logo192" width="192" height="192"></canvas>
+    <canvas id="logo512" width="512" height="512"></canvas>
+    <canvas id="favicon" width="32" height="32"></canvas>
+    <canvas id="ogImage" width="1200" height="630"></canvas>
+    
+    <script>
+        // 로고 생성 함수
+        function generateLogo(ctx, size) {
+            const primaryColor = "#6366F1";
+            const secondaryColor = "#EC4899";
+            const accentColor = "#10B981";
+            const textColor = "#FFFFFF";
+            
+            // 배경
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, size, size);
+            
+            const center = size / 2;
+            const radius = size * 0.35;
+            
+            // 그리드 그리기
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = size * 0.005;
+            ctx.globalAlpha = 0.3;
+            
+            // 수직선
+            for (let i = 0; i <= 6; i++) {
+                const x = size * (i / 6);
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, size);
+                ctx.stroke();
+            }
+            
+            // 수평선
+            for (let i = 0; i <= 6; i++) {
+                const y = size * (i / 6);
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(size, y);
+                ctx.stroke();
+            }
+            
+            ctx.globalAlpha = 1;
+            
+            // 원 그리기
+            ctx.strokeStyle = secondaryColor;
+            ctx.lineWidth = size * 0.015;
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // 내부 원
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = size * 0.01;
+            ctx.beginPath();
+            ctx.arc(center, center, radius * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // 중앙 십자가 그리기
+            ctx.strokeStyle = textColor;
+            ctx.lineWidth = size * 0.01;
+            
+            // 수직선
+            ctx.beginPath();
+            ctx.moveTo(center, center - radius * 0.5);
+            ctx.lineTo(center, center + radius * 0.5);
+            ctx.stroke();
+            
+            // 수평선
+            ctx.beginPath();
+            ctx.moveTo(center - radius * 0.5, center);
+            ctx.lineTo(center + radius * 0.5, center);
+            ctx.stroke();
+            
+            // D33 표시
+            ctx.fillStyle = textColor;
+            ctx.font = `bold ${size * 0.18}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('D33', center, center);
+            
+            // 원 안에 타로 카드 숫자 추가
+            ctx.font = `${size * 0.1}px Arial`;
+            
+            const positions = [
+                {x: center, y: center - radius * 0.85, text: 'I'},
+                {x: center + radius * 0.85, y: center, text: 'V'},
+                {x: center, y: center + radius * 0.85, text: 'X'},
+                {x: center - radius * 0.85, y: center, text: 'IV'}
+            ];
+            
+            positions.forEach(pos => {
+                ctx.fillText(pos.text, pos.x, pos.y);
+            });
+        }
+        
+        // OG 이미지 생성 함수
+        function generateOGImage(ctx, width, height) {
+            const primaryColor = "#6366F1";
+            const secondaryColor = "#EC4899";
+            const accentColor = "#10B981";
+            const textColor = "#FFFFFF";
+            
+            // 배경 그라데이션
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#2a2a4e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // 중앙 로고 영역
+            const center = {x: width * 0.3, y: height / 2};
+            const radius = Math.min(width, height) * 0.15;
+            
+            // 그리드 그리기
+            ctx.strokeStyle = primaryColor;
+            ctx.lineWidth = width * 0.002;
+            ctx.globalAlpha = 0.2;
+            
+            // 수직선
+            for (let i = 0; i <= 20; i++) {
+                const x = width * (i / 20);
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            
+            // 수평선
+            for (let i = 0; i <= 10; i++) {
+                const y = height * (i / 10);
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            
+            ctx.globalAlpha = 1;
+            
+            // 원 그리기
+            ctx.strokeStyle = secondaryColor;
+            ctx.lineWidth = width * 0.006;
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // 내부 원
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = width * 0.004;
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, radius * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // 중앙 십자가 그리기
+            ctx.strokeStyle = textColor;
+            ctx.lineWidth = width * 0.003;
+            
+            // 수직선
+            ctx.beginPath();
+            ctx.moveTo(center.x, center.y - radius * 0.5);
+            ctx.lineTo(center.x, center.y + radius * 0.5);
+            ctx.stroke();
+            
+            // 수평선
+            ctx.beginPath();
+            ctx.moveTo(center.x - radius * 0.5, center.y);
+            ctx.lineTo(center.x + radius * 0.5, center.y);
+            ctx.stroke();
+            
+            // D33 표시
+            ctx.fillStyle = textColor;
+            ctx.font = `bold ${width * 0.05}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('D33', center.x, center.y);
+            
+            // 원 안에 타로 카드 숫자 추가
+            ctx.font = `${width * 0.03}px Arial`;
+            
+            const positions = [
+                {x: center.x, y: center.y - radius * 0.85, text: 'I'},
+                {x: center.x + radius * 0.85, y: center.y, text: 'V'},
+                {x: center.x, y: center.y + radius * 0.85, text: 'X'},
+                {x: center.x - radius * 0.85, y: center.y, text: 'IV'}
+            ];
+            
+            positions.forEach(pos => {
+                ctx.fillText(pos.text, pos.x, pos.y);
+            });
+            
+            // 텍스트 추가
+            ctx.font = `bold ${height * 0.12}px Arial`;
+            ctx.fillText('운명의 매트릭스 검사', width * 0.65, height * 0.4);
+            
+            ctx.font = `${height * 0.06}px Arial`;
+            ctx.fillText('MBTI·타로·사주 통합 운명 분석', width * 0.65, height * 0.6);
+        }
+        
+        // 로고 생성
+        window.onload = function() {
+            // 192x192 로고 생성
+            const logo192Canvas = document.getElementById('logo192');
+            const logo192Ctx = logo192Canvas.getContext('2d');
+            generateLogo(logo192Ctx, 192);
+            
+            // 512x512 로고 생성
+            const logo512Canvas = document.getElementById('logo512');
+            const logo512Ctx = logo512Canvas.getContext('2d');
+            generateLogo(logo512Ctx, 512);
+            
+            // 파비콘 생성
+            const faviconCanvas = document.getElementById('favicon');
+            const faviconCtx = faviconCanvas.getContext('2d');
+            generateLogo(faviconCtx, 32);
+            
+            // OG 이미지 생성
+            const ogCanvas = document.getElementById('ogImage');
+            const ogCtx = ogCanvas.getContext('2d');
+            generateOGImage(ogCtx, 1200, 630);
+            
+            // 로고 저장
+            const logo192DataURL = logo192Canvas.toDataURL('image/png');
+            const logo512DataURL = logo512Canvas.toDataURL('image/png');
+            const faviconDataURL = faviconCanvas.toDataURL('image/png');
+            const ogImageDataURL = ogCanvas.toDataURL('image/png');
+            
+            // 결과 표시
+            document.querySelector('.message').innerHTML = `
+                <p>로고 생성이 완료되었습니다!</p>
+                <p>다음 링크를 통해 각 이미지를 다운로드할 수 있습니다:</p>
+                <p><a href="${logo192DataURL}" download="icon-192.png">아이콘 (192x192)</a></p>
+                <p><a href="${logo512DataURL}" download="icon-512.png">아이콘 (512x512)</a></p>
+                <p><a href="${faviconDataURL}" download="favicon.ico">파비콘 (32x32)</a></p>
+                <p><a href="${ogImageDataURL}" download="og-image.png">오픈 그래프 이미지 (1200x630)</a></p>
+            `;
+            
+            // SVG 버전 생성 (코드가 길어서 생략)
+            // 실제로는 여기에 SVG 로고 생성 코드를 추가
+        }
+    </script>
+</body>
+</html>

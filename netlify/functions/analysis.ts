@@ -1,15 +1,13 @@
 import type { Handler } from '@netlify/functions';
-
-// A map-based storage that persists for the duration of the function container lifetime
-// This is declared outside the handler to persist across invocations of the same function instance
-let analysesMap = new Map();
+import { personalAnalysisSchema, coupleAnalysisSchema } from "../../shared/schema";
+import { storage } from '../../server/storage';
 
 export const handler: Handler = async (event, context) => {
   // CORS 헤더 설정
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Content-Type': 'application/json'
   };
 
@@ -42,7 +40,7 @@ export const handler: Handler = async (event, context) => {
       };
     }
     
-    const analysis = analysesMap.get(id);
+    const analysis = await storage.getMatrixAnalysis(id);
     
     if (!analysis) {
       return {
@@ -52,7 +50,6 @@ export const handler: Handler = async (event, context) => {
       };
     }
     
-    // 중요: 분석 결과에 저장된 matrixPoints는 JSON 문자열이므로 파싱해서 반환해야 합니다
     return {
       statusCode: 200,
       headers,

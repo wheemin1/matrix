@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>운명의 매트릭스 썸네일</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0f172a;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .thumbnail {
+      width: 1200px;
+      height: 630px;
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.2), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.2), transparent 40%);
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .logo {
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .logo-circle {
+      width: 160px;
+      height: 160px;
+      border: 5px solid transparent;
+      border-radius: 50%;
+      background-image: linear-gradient(#0f172a, #0f172a), 
+                       linear-gradient(to right, #fbbf24, #f59e0b);
+      background-origin: border-box;
+      background-clip: content-box, border-box;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+    }
+    .logo-text {
+      color: #f59e0b;
+      font-size: 40px;
+      font-weight: bold;
+    }
+    .title {
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      background: linear-gradient(to right, #fff, #e2e8f0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: white;
+    }
+    .subtitle {
+      font-size: 36px;
+      color: #d4d4d8;
+      margin-bottom: 30px;
+    }
+    .description {
+      font-size: 28px;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+    .footer {
+      font-size: 22px;
+      color: #64748b;
+    }
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background-color: white;
+      opacity: 0.6;
+      border-radius: 50%;
+    }
+    .line {
+      position: absolute;
+      background-color: white;
+      opacity: 0.2;
+      transform-origin: 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="thumbnail">
+    <div class="stars">
+      <!-- 별과 선은 JavaScript로 동적 생성됩니다 -->
+    </div>
+    
+    <div class="logo">
+      <div class="logo-circle">
+        <div class="logo-text">운명</div>
+      </div>
+    </div>
+    
+    <h1 class="title">운명의 매트릭스</h1>
+    <h2 class="subtitle">Destiny Matrix</h2>
+    
+    <p class="description">MBTI · 타로 · 사주 통합 운명 분석</p>
+    
+    <p class="footer">당신의 고유한 운명 코드를 찾아보세요</p>
+  </div>
+
+  <script>
+    // 별과 연결선 생성
+    const stars = document.querySelector('.stars');
+    const starPositions = [
+      {x: 150, y: 150},
+      {x: 400, y: 100},
+      {x: 700, y: 200},
+      {x: 900, y: 120},
+      {x: 1100, y: 180}
+    ];
+    
+    // 별 생성
+    starPositions.forEach(pos => {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = `${pos.x}px`;
+      star.style.top = `${pos.y}px`;
+      star.style.width = `${2 + Math.random() * 2}px`;
+      star.style.height = star.style.width;
+      star.style.opacity = `${0.5 + Math.random() * 0.5}`;
+      stars.appendChild(star);
+    });
+    
+    // 연결선 생성
+    for (let i = 0; i < starPositions.length - 1; i++) {
+      const start = starPositions[i];
+      const end = starPositions[i + 1];
+      
+      const length = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+      const angle = Math.atan2(end.y - start.y, end.x - start.x);
+      
+      const line = document.createElement('div');
+      line.classList.add('line');
+      line.style.width = `${length}px`;
+      line.style.height = '1px';
+      line.style.left = `${start.x}px`;
+      line.style.top = `${start.y}px`;
+      line.style.transform = `rotate(${angle}rad)`;
+      
+      stars.appendChild(line);
+    }
+  </script>
+</body>
+</html>

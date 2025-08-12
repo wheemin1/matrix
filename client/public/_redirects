@@ -1,0 +1,12 @@
+# Static files should be served directly, not go through React Router
+/sitemap.xml /sitemap.xml 200
+/robots.txt /robots.txt 200
+/manifest.json /manifest.json 200
+/favicon.ico /favicon.ico 200
+/*.png /:splat 200
+/*.jpg /:splat 200
+/*.svg /:splat 200
+/*.ico /:splat 200
+
+# All other routes should go to React Router
+/* /index.html 200

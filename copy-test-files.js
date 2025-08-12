@@ -1,4 +1,4 @@
-// 테스트 파일과 설정 파일을 dist 폴더로 복사하는 스크립트
+// 테스트 파일을 dist 폴더로 복사하는 스크립트
 const fs = require('fs');
 const path = require('path');
 
@@ -7,18 +7,10 @@ const filesToCopy = [
   {
     src: './public/test-icons.html',
     dest: './dist/test-icons.html'
-  },
-  {
-    src: './public/_redirects',
-    dest: './dist/_redirects'
-  },
-  {
-    src: './public/matrix-bg.svg',
-    dest: './dist/matrix-bg.svg'
   }
 ];
 
-console.log('빌드 후 테스트 파일 및 설정 파일 복사 중...');
+console.log('빌드 후 테스트 파일 복사 중...');
 
 // dist 폴더가 존재하는지 확인
 if (!fs.existsSync('./dist')) {

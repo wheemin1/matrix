@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- 배경 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#2a2a4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- 배경 그리드 -->
+  <g stroke="#6366F1" stroke-width="1" opacity="0.2">
+    <!-- 수직선 -->
+    <line x1="0" y1="0" x2="0" y2="630"/>
+    <line x1="60" y1="0" x2="60" y2="630"/>
+    <line x1="120" y1="0" x2="120" y2="630"/>
+    <line x1="180" y1="0" x2="180" y2="630"/>
+    <line x1="240" y1="0" x2="240" y2="630"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="360" y1="0" x2="360" y2="630"/>
+    <line x1="420" y1="0" x2="420" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/>
+    <line x1="540" y1="0" x2="540" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="660" y1="0" x2="660" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/>
+    <line x1="780" y1="0" x2="780" y2="630"/>
+    <line x1="840" y1="0" x2="840" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/>
+    <line x1="1020" y1="0" x2="1020" y2="630"/>
+    <line x1="1080" y1="0" x2="1080" y2="630"/>
+    <line x1="1140" y1="0" x2="1140" y2="630"/>
+    <line x1="1200" y1="0" x2="1200" y2="630"/>
+    
+    <!-- 수평선 -->
+    <line x1="0" y1="0" x2="1200" y2="0"/>
+    <line x1="0" y1="63" x2="1200" y2="63"/>
+    <line x1="0" y1="126" x2="1200" y2="126"/>
+    <line x1="0" y1="189" x2="1200" y2="189"/>
+    <line x1="0" y1="252" x2="1200" y2="252"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="378" x2="1200" y2="378"/>
+    <line x1="0" y1="441" x2="1200" y2="441"/>
+    <line x1="0" y1="504" x2="1200" y2="504"/>
+    <line x1="0" y1="567" x2="1200" y2="567"/>
+    <line x1="0" y1="630" x2="1200" y2="630"/>
+  </g>
+  
+  <!-- 로고 (왼쪽 배치) -->
+  <g transform="translate(300, 315)">
+    <!-- 외부 원 -->
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#EC4899" stroke-width="6"/>
+    
+    <!-- 내부 원 -->
+    <circle cx="0" cy="0" r="70" fill="none" stroke="#10B981" stroke-width="4"/>
+    
+    <!-- 중앙 십자가 -->
+    <line x1="0" y1="-50" x2="0" y2="50" stroke="#FFFFFF" stroke-width="3"/>
+    <line x1="-50" y1="0" x2="50" y2="0" stroke="#FFFFFF" stroke-width="3"/>
+    
+    <!-- 중앙 텍스트 -->
+    <text x="0" y="7" font-family="Arial, sans-serif" font-weight="bold" font-size="50" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">D33</text>
+    
+    <!-- 타로 카드 숫자 -->
+    <text x="0" y="-85" font-family="Arial, sans-serif" font-size="30" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">I</text>
+    <text x="85" y="0" font-family="Arial, sans-serif" font-size="30" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">V</text>
+    <text x="0" y="85" font-family="Arial, sans-serif" font-size="30" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">X</text>
+    <text x="-85" y="0" font-family="Arial, sans-serif" font-size="30" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">IV</text>
+  </g>
+  
+  <!-- 텍스트 (오른쪽 배치) -->
+  <g transform="translate(750, 315)">
+    <!-- 제목 -->
+    <text x="0" y="-60" font-family="Arial, sans-serif" font-weight="bold" font-size="60" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">운명의 매트릭스 검사</text>
+    
+    <!-- 부제 -->
+    <text x="0" y="60" font-family="Arial, sans-serif" font-size="30" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">MBTI·타로·사주 통합 운명 분석</text>
+    
+    <!-- 태그라인 -->
+    <text x="0" y="120" font-family="Arial, sans-serif" font-style="italic" font-size="24" fill="#EC4899" text-anchor="middle" dominant-baseline="middle">당신만의 데스티니 매트릭스</text>
+  </g>
+</svg>

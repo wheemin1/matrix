@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <!-- 배경 -->
+    <rect width="512" height="512" fill="#2A1A5E" />
+    
+    <!-- 바깥 원 -->
+    <circle cx="256" cy="256" r="204.8" stroke="#FFD700" stroke-width="15.36" fill="none" />
+    
+    <!-- 십자 패턴 -->
+    <line x1="256" y1="112.63999999999999" x2="256" y2="399.36" stroke="#FFD700" stroke-width="10.24" />
+    <line x1="112.63999999999999" y1="256" x2="399.36" y2="256" stroke="#FFD700" stroke-width="10.24" />
+    
+    <!-- 대각선 -->
+    <line x1="155.648" y1="155.648" x2="356.352" y2="356.352" stroke="#FFD700" stroke-width="10.24" />
+    <line x1="356.352" y1="155.648" x2="155.648" y2="356.352" stroke="#FFD700" stroke-width="10.24" />
+    
+    <!-- 중앙 원 -->
+    <circle cx="256" cy="256" r="61.44" fill="#FFD700" />
+  </svg>

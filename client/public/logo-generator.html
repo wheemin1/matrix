@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운명의 매트릭스 로고 생성기</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 30px;
+            color: #1a1a2e;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .canvas-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .dark-bg {
+            background-color: #1a1a2e;
+        }
+        .light-bg {
+            background-color: #fff;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 16px;
+            background-color: #6366F1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #4F46E5;
+        }
+        .download-section {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>운명의 매트릭스 로고 생성기</h1>
+    
+    <div class="container">
+        <div class="canvas-container">
+            <div class="canvas-wrapper">
+                <h3>다크 모드</h3>
+                <canvas id="darkCanvas" width="192" height="192" class="dark-bg"></canvas>
+            </div>
+            <div class="canvas-wrapper">
+                <h3>라이트 모드</h3>
+                <canvas id="lightCanvas" width="192" height="192" class="light-bg"></canvas>
+            </div>
+            <div class="canvas-wrapper">
+                <h3>오픈 그래프 이미지</h3>
+                <canvas id="ogCanvas" width="600" height="315"></canvas>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="logoStyle">로고 스타일</label>
+                <select id="logoStyle">
+                    <option value="matrix">매트릭스 그리드</option>
+                    <option value="tarot">타로카드</option>
+                    <option value="constellation">별자리</option>
+                    <option value="geometric">기하학적</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="primaryColor">주 색상</label>
+                <input type="color" id="primaryColor" value="#6366F1">
+            </div>
+            
+            <div class="control-group">
+                <label for="secondaryColor">보조 색상</label>
+                <input type="color" id="secondaryColor" value="#EC4899">
+            </div>
+            
+            <div class="control-group">
+                <label for="accentColor">강조 색상</label>
+                <input type="color" id="accentColor" value="#10B981">
+            </div>
+            
+            <div class="control-group">
+                <label for="textColor">텍스트 색상</label>
+                <input type="color" id="textColor" value="#FFFFFF">
+            </div>
+            
+            <button id="generateBtn">로고 생성하기</button>
+        </div>
+        
+        <div class="download-section">
+            <button id="downloadDark">다크 로고 다운로드 (PNG)</button>
+            <button id="downloadLight">라이트 로고 다운로드 (PNG)</button>
+            <button id="downloadOG">OG 이미지 다운로드 (PNG)</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkCanvas = document.getElementById('darkCanvas');
+            const lightCanvas = document.getElementById('lightCanvas');
+            const ogCanvas = document.getElementById('ogCanvas');
+            const darkCtx = darkCanvas.getContext('2d');
+            const lightCtx = lightCanvas.getContext('2d');
+            const ogCtx = ogCanvas.getContext('2d');
+            
+            const logoStyleSelect = document.getElementById('logoStyle');
+            const primaryColorInput = document.getElementById('primaryColor');
+            const secondaryColorInput = document.getElementById('secondaryColor');
+            const accentColorInput = document.getElementById('accentColor');
+            const textColorInput = document.getElementById('textColor');
+            const generateBtn = document.getElementById('generateBtn');
+            
+            const downloadDarkBtn = document.getElementById('downloadDark');
+            const downloadLightBtn = document.getElementById('downloadLight');
+            const downloadOGBtn = document.getElementById('downloadOG');
+            
+            // 초기 로고 생성
+            generateLogo();
+            
+            // 이벤트 리스너
+            generateBtn.addEventListener('click', generateLogo);
+            
+            downloadDarkBtn.addEventListener('click', function() {
+                downloadCanvas(darkCanvas, 'destiny-matrix-logo-dark.png');
+            });
+            
+            downloadLightBtn.addEventListener('click', function() {
+                downloadCanvas(lightCanvas, 'destiny-matrix-logo-light.png');
+            });
+            
+            downloadOGBtn.addEventListener('click', function() {
+                downloadCanvas(ogCanvas, 'destiny-matrix-og-image.png');
+            });
+            
+            function generateLogo() {
+                const logoStyle = logoStyleSelect.value;
+                const primaryColor = primaryColorInput.value;
+                const secondaryColor = secondaryColorInput.value;
+                const accentColor = accentColorInput.value;
+                const textColor = textColorInput.value;
+                
+                // 캔버스 초기화
+                darkCtx.fillStyle = '#1a1a2e';
+                darkCtx.fillRect(0, 0, darkCanvas.width, darkCanvas.height);
+                
+                lightCtx.fillStyle = '#ffffff';
+                lightCtx.fillRect(0, 0, lightCanvas.width, lightCanvas.height);
+                
+                ogCtx.fillStyle = '#1a1a2e';
+                ogCtx.fillRect(0, 0, ogCanvas.width, ogCanvas.height);
+                
+                // 선택된 스타일에 따라 로고 생성
+                switch(logoStyle) {
+                    case 'matrix':
+                        drawMatrixLogo(darkCtx, primaryColor, secondaryColor, accentColor, textColor, darkCanvas.width);
+                        drawMatrixLogo(lightCtx, primaryColor, secondaryColor, accentColor, '#1a1a2e', lightCanvas.width);
+                        drawMatrixOG(ogCtx, primaryColor, secondaryColor, accentColor, textColor, ogCanvas.width, ogCanvas.height);
+                        break;
+                    case 'tarot':
+                        drawTarotLogo(darkCtx, primaryColor, secondaryColor, accentColor, textColor, darkCanvas.width);
+                        drawTarotLogo(lightCtx, primaryColor, secondaryColor, accentColor, '#1a1a2e', lightCanvas.width);
+                        drawTarotOG(ogCtx, primaryColor, secondaryColor, accentColor, textColor, ogCanvas.width, ogCanvas.height);
+                        break;
+                    case 'constellation':
+                        drawConstellationLogo(darkCtx, primaryColor, secondaryColor, accentColor, textColor, darkCanvas.width);
+                        drawConstellationLogo(lightCtx, primaryColor, secondaryColor, accentColor, '#1a1a2e', lightCanvas.width);
+                        drawConstellationOG(ogCtx, primaryColor, secondaryColor, accentColor, textColor, ogCanvas.width, ogCanvas.height);
+                        break;
+                    case 'geometric':
+                        drawGeometricLogo(darkCtx, primaryColor, secondaryColor, accentColor, textColor, darkCanvas.width);
+                        drawGeometricLogo(lightCtx, primaryColor, secondaryColor, accentColor, '#1a1a2e', lightCanvas.width);
+                        drawGeometricOG(ogCtx, primaryColor, secondaryColor, accentColor, textColor, ogCanvas.width, ogCanvas.height);
+                        break;
+                }
+            }
+            
+            // 매트릭스 스타일 로고
+            function drawMatrixLogo(ctx, primaryColor, secondaryColor, accentColor, textColor, size) {
+                const center = size / 2;
+                const radius = size * 0.35;
+                
+                // 그리드 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 1;
+                
+                // 수직선
+                for (let i = 0; i <= 6; i++) {
+                    const x = size * (i / 6);
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, size);
+                    ctx.stroke();
+                }
+                
+                // 수평선
+                for (let i = 0; i <= 6; i++) {
+                    const y = size * (i / 6);
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(size, y);
+                    ctx.stroke();
+                }
+                
+                // 원 그리기
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(center, center, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 내부 원
+                ctx.strokeStyle = accentColor;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(center, center, radius * 0.7, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 타로 카드 숫자 랜덤 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `${size * 0.1}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const positions = [
+                    {x: center, y: center - radius * 0.85},
+                    {x: center + radius * 0.85, y: center},
+                    {x: center, y: center + radius * 0.85},
+                    {x: center - radius * 0.85, y: center}
+                ];
+                
+                const numbers = ['I', 'V', 'X', 'IV'];
+                
+                positions.forEach((pos, i) => {
+                    ctx.fillText(numbers[i], pos.x, pos.y);
+                });
+                
+                // D33 표시
+                ctx.font = `bold ${size * 0.18}px Arial`;
+                ctx.fillText('D33', center, center);
+            }
+            
+            // 매트릭스 OG 이미지
+            function drawMatrixOG(ctx, primaryColor, secondaryColor, accentColor, textColor, width, height) {
+                const center = {x: width / 2, y: height / 2};
+                const radius = height * 0.25;
+                
+                // 배경 그라데이션
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#2a2a4e');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                // 그리드 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.globalAlpha = 0.3;
+                ctx.lineWidth = 1;
+                
+                // 수직선
+                const vLines = 24;
+                for (let i = 0; i <= vLines; i++) {
+                    const x = width * (i / vLines);
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                
+                // 수평선
+                const hLines = 12;
+                for (let i = 0; i <= hLines; i++) {
+                    const y = height * (i / hLines);
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                ctx.globalAlpha = 1;
+                
+                // 원 그리기
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 내부 원
+                ctx.strokeStyle = accentColor;
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, radius * 0.7, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // 타로 카드 숫자 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `${height * 0.08}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const positions = [
+                    {x: center.x, y: center.y - radius * 0.85},
+                    {x: center.x + radius * 0.85, y: center.y},
+                    {x: center.x, y: center.y + radius * 0.85},
+                    {x: center.x - radius * 0.85, y: center.y}
+                ];
+                
+                const numbers = ['I', 'V', 'X', 'IV'];
+                
+                positions.forEach((pos, i) => {
+                    ctx.fillText(numbers[i], pos.x, pos.y);
+                });
+                
+                // D33 표시
+                ctx.font = `bold ${height * 0.14}px Arial`;
+                ctx.fillText('D33', center.x, center.y);
+                
+                // 텍스트 추가
+                ctx.font = `bold ${height * 0.12}px Arial`;
+                ctx.fillText('운명의 매트릭스 검사', center.x, height * 0.8);
+                
+                ctx.font = `${height * 0.06}px Arial`;
+                ctx.fillText('Destiny Matrix', center.x, height * 0.9);
+            }
+            
+            // 타로 카드 스타일 로고
+            function drawTarotLogo(ctx, primaryColor, secondaryColor, accentColor, textColor, size) {
+                const padding = size * 0.15;
+                const cardWidth = size - padding * 2;
+                const cardHeight = cardWidth * 1.5;
+                const cornerRadius = size * 0.05;
+                
+                // 카드 배경
+                ctx.fillStyle = primaryColor;
+                roundedRect(ctx, padding, (size - cardHeight) / 2, cardWidth, cardHeight, cornerRadius);
+                
+                // 카드 테두리
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                roundedRect(ctx, padding + 5, (size - cardHeight) / 2 + 5, cardWidth - 10, cardHeight - 10, cornerRadius - 2);
+                
+                // 별 그리기
+                ctx.fillStyle = accentColor;
+                const starCenter = {x: size / 2, y: size / 2};
+                const outerRadius = size * 0.2;
+                const innerRadius = outerRadius * 0.4;
+                drawStar(ctx, starCenter.x, starCenter.y, 5, outerRadius, innerRadius);
+                
+                // "33" 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${size * 0.18}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('33', size / 2, size / 2);
+                
+                // 'D' 표시
+                ctx.font = `bold ${size * 0.1}px Arial`;
+                ctx.fillText('D', size / 2, size / 2 - size * 0.15);
+            }
+            
+            function drawTarotOG(ctx, primaryColor, secondaryColor, accentColor, textColor, width, height) {
+                // 배경 그라데이션
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#2a2a4e');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                const center = {x: width / 2, y: height / 2};
+                const cardWidth = width * 0.3;
+                const cardHeight = cardWidth * 1.5;
+                const cornerRadius = width * 0.02;
+                
+                // 카드 배경
+                ctx.fillStyle = primaryColor;
+                roundedRect(ctx, center.x - cardWidth/2, center.y - cardHeight/2, cardWidth, cardHeight, cornerRadius);
+                
+                // 카드 테두리
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                roundedRect(ctx, center.x - cardWidth/2 + 10, center.y - cardHeight/2 + 10, cardWidth - 20, cardHeight - 20, cornerRadius - 2);
+                
+                // 별 그리기
+                ctx.fillStyle = accentColor;
+                const outerRadius = width * 0.08;
+                const innerRadius = outerRadius * 0.4;
+                drawStar(ctx, center.x, center.y, 5, outerRadius, innerRadius);
+                
+                // "33" 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${width * 0.09}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('33', center.x, center.y);
+                
+                // 'D' 표시
+                ctx.font = `bold ${width * 0.05}px Arial`;
+                ctx.fillText('D', center.x, center.y - width * 0.05);
+                
+                // 텍스트 추가
+                ctx.font = `bold ${height * 0.12}px Arial`;
+                ctx.fillText('운명의 매트릭스 검사', center.x, height * 0.8);
+                
+                ctx.font = `${height * 0.06}px Arial`;
+                ctx.fillText('Destiny Matrix', center.x, height * 0.9);
+            }
+            
+            // 별자리 스타일 로고
+            function drawConstellationLogo(ctx, primaryColor, secondaryColor, accentColor, textColor, size) {
+                const center = size / 2;
+                const radius = size * 0.35;
+                
+                // 별 좌표 (3, 3) 그리드에 배치
+                const stars = [
+                    {x: center - radius * 0.6, y: center - radius * 0.6},
+                    {x: center, y: center - radius * 0.8},
+                    {x: center + radius * 0.6, y: center - radius * 0.6},
+                    {x: center - radius * 0.8, y: center},
+                    {x: center, y: center},
+                    {x: center + radius * 0.8, y: center},
+                    {x: center - radius * 0.6, y: center + radius * 0.6},
+                    {x: center, y: center + radius * 0.8},
+                    {x: center + radius * 0.6, y: center + radius * 0.6}
+                ];
+                
+                // 별자리 선 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 1.5;
+                
+                const connections = [
+                    [0, 1], [1, 2], [0, 3], [2, 5],
+                    [3, 4], [4, 5], [3, 6], [5, 8],
+                    [6, 7], [7, 8], [4, 7]
+                ];
+                
+                connections.forEach(conn => {
+                    const from = stars[conn[0]];
+                    const to = stars[conn[1]];
+                    ctx.beginPath();
+                    ctx.moveTo(from.x, from.y);
+                    ctx.lineTo(to.x, to.y);
+                    ctx.stroke();
+                });
+                
+                // 별 그리기
+                stars.forEach((star, i) => {
+                    ctx.fillStyle = i === 4 ? accentColor : secondaryColor;
+                    const starSize = i === 4 ? size * 0.06 : size * 0.04;
+                    drawSimpleStar(ctx, star.x, star.y, starSize);
+                });
+                
+                // "D33" 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${size * 0.15}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('D33', center, center + size * 0.45);
+            }
+            
+            function drawConstellationOG(ctx, primaryColor, secondaryColor, accentColor, textColor, width, height) {
+                // 배경 그라데이션 - 밤하늘 느낌
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#0f0f2a');
+                gradient.addColorStop(1, '#1a1a3a');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                // 랜덤 작은 별들 추가
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                for (let i = 0; i < 100; i++) {
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const size = Math.random() * 2;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                const center = {x: width / 2, y: height / 2};
+                const radius = height * 0.25;
+                
+                // 별 좌표 (3, 3) 그리드에 배치
+                const stars = [
+                    {x: center.x - radius * 0.6, y: center.y - radius * 0.6},
+                    {x: center.x, y: center.y - radius * 0.8},
+                    {x: center.x + radius * 0.6, y: center.y - radius * 0.6},
+                    {x: center.x - radius * 0.8, y: center.y},
+                    {x: center.x, y: center.y},
+                    {x: center.x + radius * 0.8, y: center.y},
+                    {x: center.x - radius * 0.6, y: center.y + radius * 0.6},
+                    {x: center.x, y: center.y + radius * 0.8},
+                    {x: center.x + radius * 0.6, y: center.y + radius * 0.6}
+                ];
+                
+                // 별자리 선 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 3;
+                
+                const connections = [
+                    [0, 1], [1, 2], [0, 3], [2, 5],
+                    [3, 4], [4, 5], [3, 6], [5, 8],
+                    [6, 7], [7, 8], [4, 7]
+                ];
+                
+                connections.forEach(conn => {
+                    const from = stars[conn[0]];
+                    const to = stars[conn[1]];
+                    ctx.beginPath();
+                    ctx.moveTo(from.x, from.y);
+                    ctx.lineTo(to.x, to.y);
+                    ctx.stroke();
+                });
+                
+                // 별 그리기
+                stars.forEach((star, i) => {
+                    ctx.fillStyle = i === 4 ? accentColor : secondaryColor;
+                    const starSize = i === 4 ? width * 0.025 : width * 0.015;
+                    drawSimpleStar(ctx, star.x, star.y, starSize);
+                });
+                
+                // "D33" 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${height * 0.15}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('D33', center.x, center.y + height * 0.25);
+                
+                // 텍스트 추가
+                ctx.font = `bold ${height * 0.12}px Arial`;
+                ctx.fillText('운명의 매트릭스 검사', center.x, height * 0.8);
+                
+                ctx.font = `${height * 0.06}px Arial`;
+                ctx.fillText('Destiny Matrix', center.x, height * 0.9);
+            }
+            
+            // 기하학적 스타일 로고
+            function drawGeometricLogo(ctx, primaryColor, secondaryColor, accentColor, textColor, size) {
+                const center = size / 2;
+                const radius = size * 0.35;
+                
+                // 육각형 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 3;
+                drawPolygon(ctx, center, center, radius, 6);
+                
+                // 내부 삼각형
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 2;
+                drawPolygon(ctx, center, center, radius * 0.7, 3);
+                
+                // 중앙 원
+                ctx.fillStyle = accentColor;
+                ctx.beginPath();
+                ctx.arc(center, center, radius * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // "D33" 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${size * 0.15}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('D33', center, center);
+            }
+            
+            function drawGeometricOG(ctx, primaryColor, secondaryColor, accentColor, textColor, width, height) {
+                // 배경 그라데이션
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#1a1a2e');
+                gradient.addColorStop(1, '#2a2a4e');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                
+                const center = {x: width / 2, y: height / 2};
+                const radius = height * 0.25;
+                
+                // 육각형 그리기
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 6;
+                drawPolygon(ctx, center.x, center.y, radius, 6);
+                
+                // 내부 삼각형
+                ctx.strokeStyle = secondaryColor;
+                ctx.lineWidth = 4;
+                drawPolygon(ctx, center.x, center.y, radius * 0.7, 3);
+                
+                // 중앙 원
+                ctx.fillStyle = accentColor;
+                ctx.beginPath();
+                ctx.arc(center.x, center.y, radius * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // "D33" 표시
+                ctx.fillStyle = textColor;
+                ctx.font = `bold ${height * 0.15}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('D33', center.x, center.y);
+                
+                // 텍스트 추가
+                ctx.font = `bold ${height * 0.12}px Arial`;
+                ctx.fillText('운명의 매트릭스 검사', center.x, height * 0.8);
+                
+                ctx.font = `${height * 0.06}px Arial`;
+                ctx.fillText('Destiny Matrix', center.x, height * 0.9);
+            }
+            
+            // 헬퍼 함수들
+            function drawPolygon(ctx, x, y, radius, sides) {
+                ctx.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const angle = (i * 2 * Math.PI / sides) - Math.PI / 2;
+                    const px = x + radius * Math.cos(angle);
+                    const py = y + radius * Math.sin(angle);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(px, py);
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+            
+            function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+                ctx.beginPath();
+                let rot = Math.PI / 2 * 3;
+                let x = cx;
+                let y = cy;
+                let step = Math.PI / spikes;
+                
+                ctx.moveTo(cx, cy - outerRadius);
+                for (let i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                    
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                }
+                ctx.lineTo(cx, cy - outerRadius);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            function drawSimpleStar(ctx, x, y, size) {
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            function roundedRect(ctx, x, y, width, height, radius) {
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.arcTo(x + width, y, x + width, y + radius, radius);
+                ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+                ctx.arcTo(x, y + height, x, y + height - radius, radius);
+                ctx.arcTo(x, y, x + radius, y, radius);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            function downloadCanvas(canvas, filename) {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>

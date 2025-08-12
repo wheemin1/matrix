@@ -73,4 +73,7 @@ export function calculateDestinyMatrix(birthdate: string, gender?: string): Matr
   };
 }
 
-
+// Function to import in server routes
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { calculateDestinyMatrix };
+}

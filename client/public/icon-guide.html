@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이콘 및 OG 이미지 가이드</title>
+  <style>
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #1a1a2e;
+    }
+    .icon-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+      align-items: center;
+    }
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 10px;
+      width: 200px;
+    }
+    .icon-item img {
+      margin-bottom: 10px;
+    }
+    .file-list {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    code {
+      font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      background-color: #f0f0f0;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    .note {
+      background-color: #fffde7;
+      border-left: 4px solid #ffd600;
+      padding: 10px 15px;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>아이콘 및 OG 이미지 가이드</h1>
+  
+  <p>운명의 매트릭스 검사 웹사이트에 사용되는 모든 아이콘 및 OG 이미지 파일에 대한 가이드입니다.</p>
+  
+  <h2>파일 구조</h2>
+  
+  <div class="file-list">
+    <p><strong>SVG 원본 파일:</strong></p>
+    <ul>
+      <li><code>/public/icon-simple.svg</code> - 기본 파비콘 (타로 카드, 별, 달 아이콘)</li>
+      <li><code>/public/og-simple.svg</code> - 심플한 OG 이미지 (텍스트 및 별 장식만)</li>
+    </ul>
+    
+    <p><strong>PNG 변환 파일:</strong></p>
+    <ul>
+      <li><code>/public/icon-192.png</code> - 192x192 PNG 아이콘 (웹 앱 아이콘)</li>
+      <li><code>/public/icon-512.png</code> - 512x512 PNG 아이콘 (웹 앱 아이콘)</li>
+    </ul>
+  </div>
+  
+  <h2>아이콘 미리보기</h2>
+  
+  <div class="icon-container">
+    <div class="icon-item">
+      <img src="/icon-simple.svg" alt="Simple Icon" width="100">
+      <p>icon-simple.svg</p>
+      <small>파비콘 및 기본 아이콘</small>
+    </div>
+    
+    <div class="icon-item">
+      <img src="/icon-192.png" alt="192px Icon" width="80">
+      <p>icon-192.png</p>
+      <small>PWA 아이콘 (192x192)</small>
+    </div>
+    
+    <div class="icon-item">
+      <img src="/icon-512.png" alt="512px Icon" width="120">
+      <p>icon-512.png</p>
+      <small>PWA 아이콘 (512x512)</small>
+    </div>
+  </div>
+  
+  <h2>OG 이미지 미리보기</h2>
+  
+  <div class="icon-container">
+    <div class="icon-item" style="width: 400px;">
+      <img src="/og-simple.svg" alt="OG Simple" style="width: 100%;">
+      <p>og-simple.svg</p>
+      <small>심플한 OG 이미지 (SNS 공유용)</small>
+    </div>
+  </div>
+  
+  <h2>아이콘 업데이트 방법</h2>
+  
+  <p>SVG 원본 파일을 수정한 후 PNG 파일들을 업데이트하려면:</p>
+  
+  <ol>
+    <li>SVG 파일 (<code>icon-simple.svg</code>)을 원하는 디자인으로 수정합니다.</li>
+    <li>루트 디렉토리에 있는 <code>update-icons.bat</code> 스크립트를 실행합니다:
+      <pre>.\update-icons.bat</pre>
+    </li>
+    <li>스크립트가 자동으로 SVG를 PNG로 변환합니다.</li>
+  </ol>
+  
+  <div class="note">
+    <p><strong>참고:</strong> SVG를 PNG로 변환하기 위해서는 <a href="https://inkscape.org/" target="_blank">Inkscape</a>가 설치되어 있으면 좋습니다. 설치되어 있지 않은 경우, 스크립트는 PowerShell로 기본적인 변환을 시도하지만 품질이 떨어질 수 있습니다.</p>
+  </div>
+  
+  <h2>HTML 메타태그</h2>
+  
+  <p>현재 다음 메타태그들이 <code>index.html</code>에 설정되어 있습니다:</p>
+  
+  <pre>
+&lt;!-- Icons --&gt;
+&lt;link rel="icon" href="/favicon.ico" /&gt;
+&lt;link rel="icon" type="image/svg+xml" href="/icon-simple.svg" /&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/icon-simple.svg" /&gt;
+&lt;link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" /&gt;
+&lt;link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" /&gt;
+
+&lt;!-- Open Graph / Facebook --&gt;
+&lt;meta property="og:image" content="https://destiny33.site/og-simple.svg" /&gt;
+
+&lt;!-- Twitter --&gt;
+&lt;meta name="twitter:image" content="https://destiny33.site/og-simple.svg" /&gt;
+  </pre>
+  
+  <hr>
+  
+  <p><small>마지막 업데이트: 2025년 7월 6일</small></p>
+</body>
+</html>
