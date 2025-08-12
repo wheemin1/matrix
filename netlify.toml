@@ -112,7 +112,7 @@
     Content-Type = "text/plain"
     Cache-Control = "public, max-age=3600"
 
-# 정적 리소스에 대한 리다이렉트 제외 규칙 (CSS 파일이 HTML로 리다이렉트되는 것 방지)
+# 정적 리소스에 대한 리다이렉트 제외 규칙 (최우선)
 [[redirects]]
   from = "/sitemap.xml"
   to = "/sitemap.xml"
@@ -129,17 +129,31 @@
   status = 200
 
 [[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.ico"
+  status = 200
+
+[[redirects]]
+  from = "/*.png"
+  to = "/:splat.png"
+  status = 200
+
+[[redirects]]
+  from = "/*.jpg"
+  to = "/:splat.jpg"
+  status = 200
+
+[[redirects]]
+  from = "/*.svg"
+  to = "/:splat.svg"
+  status = 200
+
+[[redirects]]
   from = "/src/styles/*"
   to = "/src/styles/:splat"
   status = 200
 
-# Client-side routing redirects (이것은 맨 마지막에 와야 함)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# HTTP to HTTPS 리다이렉트
+# HTTP to HTTPS 리다이렉트 (도메인별 우선 처리)
 [[redirects]]
   from = "http://destiny33.site/*"
   to = "https://destiny33.site/:splat"
@@ -164,6 +178,12 @@
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
+  status = 200
+
+# Client-side routing redirects (맨 마지막에 와야 함)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 # Serverless functions configuration
