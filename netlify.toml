@@ -174,11 +174,11 @@
   status = 301
   force = true
 
-# API redirects for serverless functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+# API redirects for serverless functions (temporarily disabled)
+# [[redirects]]
+#   from = "/api/*"
+#   to = "/.netlify/functions/:splat"
+#   status = 200
 
 # Client-side routing redirects (맨 마지막에 와야 함)
 [[redirects]]
@@ -186,7 +186,7 @@
   to = "/index.html"
   status = 200
 
-# Serverless functions configuration
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+# Serverless functions configuration (temporarily disabled)
+# [functions]
+#   directory = "netlify/functions"
+#   node_bundler = "esbuild"
